@@ -3,9 +3,9 @@ const readline = require('readline');
 const replace = require('replace-in-file');
 
 const BASE_DIRECTORY = './';
-const DEFAULT_COMPANY_NAME = 'invertase';
-const DEFAULT_PACKAGE_NAME = 'com.invertase.rnfirebasestarter';
-const DEFAULT_PROJECT_NAME = 'RNFirebaseStarter';
+const DEFAULT_COMPANY_NAME = 'Altick';
+const DEFAULT_PACKAGE_NAME = 'com.altick.reactnativefirebaseappbase';
+const DEFAULT_PROJECT_NAME = 'ReactNativeFirebaseAppBase';
 const VALID_CHARACTERS = /^[a-zA-Z\s]+$/;
 
 const rl = readline.createInterface({
