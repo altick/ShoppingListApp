@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-// import LoginContext from './login/LoginContext';
+import LoginContext from './login/LoginContext';
 import { StyleSheet, View, Text } from 'react-native';
 
 class StartupComponent extends React.Component {
