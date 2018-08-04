@@ -6,27 +6,28 @@ import ListContext, { ShoppingList } from './ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List } from 'native-base';
 import LoginContext, { User } from '../login/LoginContext';
 
+
 type Props = {
     listService: ListService,
     loginService: LoginService
 }
 
-class ListsScreen extends React.Component<Props> {
+class ListScreen extends React.Component<Props> {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            lists: []
+            items: []
         }
     }
 
     async componentDidMount() {
-        this.loadLists();
+        this.loadItems();
     }
 
     componentWillUnmount() {
-        this.unsubscribeLists();
+        this.unsubscribeItems();
     }
     
     componentDidUpdate(prevProps, prevState) {
@@ -34,66 +35,66 @@ class ListsScreen extends React.Component<Props> {
         // New SomeContext value is this.props.someValue
     }
 
-    async loadLists() {
-        this.unsubscribeLists();
+    async loadItems() {
+        this.unsubscribeItems();
 
-        let user: User = await this.props.loginService.getUser();
+        // let user: User = await this.props.loginService.getUser();
 
-        let subscription = this.props.listService.getLists(user, (snapshot) => {
-            let lists = [];
-            snapshot.forEach(doc => {
-                let list: ShoppingList = { ...doc.data(), id: doc.id };
-                console.info(JSON.stringify(list));
-                lists.push(list);
-            });
+        // let subscription = this.props.listService.getLists(user, (snapshot) => {
+        //     let lists = [];
+        //     snapshot.forEach(doc => {
+        //         let list: ShoppingList = { ...doc.data(), id: doc.id };
+        //         console.info(JSON.stringify(list));
+        //         lists.push(list);
+        //     });
 
-            this.setState({
-                lists: lists
-            });
-        });
-        this.state.listsSubscription = subscription;
+        //     this.setState({
+        //         lists: lists
+        //     });
+        // });
+        // this.state.itemsSubscription = subscription;
     }
 
-    unsubscribeLists() {
-        if(this.state.listsSubscription) {
-            this.state.listsSubscription();
-            this.state.listsSubscription = null;
+    unsubscribeItems() {
+        if(this.state.itemsSubscription) {
+            this.state.itemsSubscription();
+            this.state.itemsSubscription = null;
         }
     }
 
-    onAddList() {
-        console.info('Add list');
+    onAddItem() {
+        console.info('Add item');
 
-        this.props.navigation.push('AddList');
+        this.props.navigation.push('AddItem');
     }
 
-    onGotoList(list) {
-        console.info(list.name);
-       
-        this.props.navigation.push('List',{ list: list });
+    navigateBack() {
+        this.props.navigation.popToTop()
     }
 
     render() {
-        const {  } = this.props;
+        const { navigation } = this.props;
         
+        const list = navigation.getParam('list');
+
         return (
             <Container>
                 <Header>
                     <Left>
-                        <Button transparent>
-                            <Icon name='menu' />
+                        <Button transparent onPress={ () => this.navigateBack() }>
+                            <Icon name='arrow-left' type="MaterialCommunityIcons" />
                         </Button>
                     </Left>
                     <Body>
-                        <Title>Shopping Lists</Title>
+                        <Title>...{ list.name }</Title>
                     </Body>
                 </Header>
                 <View style={{ flex: 1 }}>
                     <Content>
                         <List>
-                            { this.state.lists.map(list => (
-                                    <ListItem key={list.id} button={true} onPress={ () => this.onGotoList(list) } >
-                                        <Text>{ list.name }</Text>
+                            { this.state.items.map(item => (
+                                    <ListItem key={item.id} button={true} onPress={ () => {} } >
+                                        <Text>{ item.name }</Text>
                                     </ListItem> 
                                 ))
                             }
@@ -116,19 +117,19 @@ let styles = StyleSheet.create({
     
 });
 
-let ListsScreenWithContext = props => (
+let ListScreenWithContext = props => (
     <LoginContext.Consumer>
         {loginService => (
             <ListContext.Consumer>
                 {listService => (
-                    <ListsScreen { ...props } 
+                    <ListScreen { ...props } 
                         loginService={ loginService }
                         listService={ listService } 
-                    ></ListsScreen>
+                    ></ListScreen>
                 ) }
             </ListContext.Consumer>
         ) }
     </LoginContext.Consumer>
 );
 
-export default ListsScreenWithContext;
+export default ListScreenWithContext;

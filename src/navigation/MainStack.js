@@ -5,6 +5,7 @@ import Startup from '../Startup';
 import LoginScreenWithContext from '../login/LoginScreen';
 import ListsScreenWithContext from '../list/ListsScreen';
 import AddListScreenWithContext from '../list/AddListScreen';
+import ListScreenWithContext from '../list/ListScreen';
 
 const MainStack = createStackNavigator({
     Startup: {
@@ -15,6 +16,9 @@ const MainStack = createStackNavigator({
     },
     Lists: {
         screen: ListsScreenWithContext
+    },
+    List: {
+        screen: ListScreenWithContext
     },
     AddList: {
         screen: AddListScreenWithContext
