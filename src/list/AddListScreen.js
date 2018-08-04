@@ -51,7 +51,7 @@ class AddListScreen extends React.Component<Props> {
     }
 
     navigateBack() {
-        this.props.navigation.popToTop()
+        this.props.navigation.pop()
     }
 
     render() {
@@ -76,7 +76,6 @@ class AddListScreen extends React.Component<Props> {
                 </Header>
                 <View style={{ flex: 1 }}>
                     <Content>
-                    <Text>{this.state.listName}</Text>
                         <Input 
                             ref={ input => this.listNameInput = input }
                             value={ this.state.listName } 

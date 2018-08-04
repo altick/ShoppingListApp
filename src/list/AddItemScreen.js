@@ -52,7 +52,7 @@ class AddItemScreen extends React.Component<Props> {
     }
 
     navigateBack() {
-        this.props.navigation.popToTop()
+        this.props.navigation.pop()
     }
 
     render() {
@@ -79,7 +79,6 @@ class AddItemScreen extends React.Component<Props> {
                 </Header>
                 <View style={{ flex: 1 }}>
                     <Content>
-                    <Text>{this.state.itemName}</Text>
                         <Input 
                             ref={ input => this.itemNameInput = input }
                             value={ this.state.itemName } 
