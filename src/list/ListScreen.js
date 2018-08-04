@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import ListContext, { ShoppingList } from './ListContext';
+import ListContext, { ShoppingList, ProductItem } from './ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List } from 'native-base';
 import LoginContext, { User } from '../login/LoginContext';
 
@@ -13,6 +13,8 @@ type Props = {
 }
 
 class ListScreen extends React.Component<Props> {
+
+    itemsSubscription = null;
 
     constructor(props) {
         super(props);
@@ -38,27 +40,28 @@ class ListScreen extends React.Component<Props> {
     async loadItems() {
         this.unsubscribeItems();
 
-        // let user: User = await this.props.loginService.getUser();
+        let list = this.props.navigation.getParam('list');
+        let user: User = await this.props.loginService.getUser();
 
-        // let subscription = this.props.listService.getLists(user, (snapshot) => {
-        //     let lists = [];
-        //     snapshot.forEach(doc => {
-        //         let list: ShoppingList = { ...doc.data(), id: doc.id };
-        //         console.info(JSON.stringify(list));
-        //         lists.push(list);
-        //     });
+        let subscription = await this.props.listService.getItems(user, list.id, (snapshot) => {
+            let items = [];
+            snapshot.forEach(doc => {
+                let item: ProductItem = { ...doc.data(), id: doc.id };
+                console.info(JSON.stringify(item));
+                items.push(item);
+            });
 
-        //     this.setState({
-        //         lists: lists
-        //     });
-        // });
-        // this.state.itemsSubscription = subscription;
+            this.setState({
+                items: items
+            });
+        });
+        this.itemsSubscription = subscription;
     }
 
     unsubscribeItems() {
-        if(this.state.itemsSubscription) {
-            this.state.itemsSubscription();
-            this.state.itemsSubscription = null;
+        if(this.itemsSubscription) {
+            this.itemsSubscription();
+            this.itemsSubscription = null;
         }
     }
 

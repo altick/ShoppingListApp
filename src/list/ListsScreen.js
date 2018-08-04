@@ -13,6 +13,8 @@ type Props = {
 
 class ListsScreen extends React.Component<Props> {
 
+    listsSubscription = null;
+
     constructor(props) {
         super(props);
 
@@ -39,7 +41,7 @@ class ListsScreen extends React.Component<Props> {
 
         let user: User = await this.props.loginService.getUser();
 
-        let subscription = this.props.listService.getLists(user, (snapshot) => {
+        let subscription = await this.props.listService.getLists(user, (snapshot) => {
             let lists = [];
             snapshot.forEach(doc => {
                 let list: ShoppingList = { ...doc.data(), id: doc.id };
@@ -51,13 +53,14 @@ class ListsScreen extends React.Component<Props> {
                 lists: lists
             });
         });
-        this.state.listsSubscription = subscription;
+
+        this.listsSubscription = subscription;
     }
 
     unsubscribeLists() {
-        if(this.state.listsSubscription) {
-            this.state.listsSubscription();
-            this.state.listsSubscription = null;
+        if(this.listsSubscription) {
+            this.listsSubscription();
+            this.listsSubscription = null;
         }
     }
 

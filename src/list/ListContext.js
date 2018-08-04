@@ -65,6 +65,18 @@ export class ListService extends ServiceComponent {
         await db.collection('lists').doc(listId).collection('items').add(item);
     }
 
+    getItems = async (user, listId, onSnapshot) => {
+
+        let query = firebase.firestore().collection('lists').doc(listId).collection('items')
+            .orderBy('name');
+
+        let subscription = query.onSnapshot(snapshot => {
+            onSnapshot(snapshot);
+        });
+        
+        return subscription;
+    }
+
 }
 
 let ListContext = createServiceContext(new ListService());
