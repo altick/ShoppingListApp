@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ListContext from './ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab } from 'native-base';
+import LoginContext from '../login/LoginContext';
 
 class ListsScreen extends React.Component {
 
@@ -29,29 +30,29 @@ class ListsScreen extends React.Component {
         
         return (
             <Container>
-            <Header>
-                <Left>
-                    <Button transparent>
-                        <Icon name='menu' />
-                    </Button>
-                </Left>
-                <Body>
-                    <Title>Shopping Lists</Title>
-                </Body>
-            </Header>
-            <View style={{ flex: 1 }}>
-                <Content>
-                    <Text>Hello world!</Text>
-                </Content>
-                <Fab
-                    containerStyle={{ }}
-                    style={{ backgroundColor: '#5067FF' }}
-                    position="bottomRight"
-                    onPress={() => this.onAddList() }>
-                    <Icon name="add" />
-                </Fab>
-            </View>
-          </Container>
+                <Header>
+                    <Left>
+                        <Button transparent>
+                            <Icon name='menu' />
+                        </Button>
+                    </Left>
+                    <Body>
+                        <Title>Shopping Lists</Title>
+                    </Body>
+                </Header>
+                <View style={{ flex: 1 }}>
+                    <Content>
+                        <Text>Hello world!</Text>
+                    </Content>
+                    <Fab
+                        containerStyle={{ }}
+                        style={{ backgroundColor: '#5067FF' }}
+                        position="bottomRight"
+                        onPress={() => this.onAddList() }>
+                        <Icon name="add" />
+                    </Fab>
+                </View>
+            </Container>
         );
     }
 }
@@ -61,11 +62,18 @@ let styles = StyleSheet.create({
 });
 
 let ListsScreenWithContext = props => (
-    <ListContext.Consumer>
-        {listService => (
-            <ListsScreen { ...props } listService={ listService } ></ListsScreen>
+    <LoginContext.Consumer>
+        {loginService => (
+            <ListContext.Consumer>
+                {listService => (
+                    <ListsScreen { ...props } 
+                        loginService={ loginService }
+                        listService={ listService } 
+                    ></ListsScreen>
+                ) }
+            </ListContext.Consumer>
         ) }
-    </ListContext.Consumer>
+    </LoginContext.Consumer>
 );
 
 export default ListsScreenWithContext;

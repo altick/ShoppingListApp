@@ -9,7 +9,7 @@ export type User = {
     username: string
 }
 
-class LoginService extends ServiceComponent {
+export class LoginService extends ServiceComponent {
 
     constructor() {
         super({
@@ -18,9 +18,7 @@ class LoginService extends ServiceComponent {
     }
 
     validateUser = async () => {
-        let data = await AsyncStorage.getItem('auth:current-user');
-    
-        let currentUser = JSON.parse(data);
+        let currentUser = await this.getUser();
 
         if(!currentUser) {
             return false;
@@ -60,6 +58,13 @@ class LoginService extends ServiceComponent {
         await firebase.auth().signOut();
     
         await AsyncStorage.removeItem('auth:current-user');
+    }
+
+    getUser = async () => {
+        let data = await AsyncStorage.getItem('auth:current-user');
+    
+        let currentUser = JSON.parse(data);
+        return currentUser;
     }
 
 }

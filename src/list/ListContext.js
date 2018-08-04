@@ -5,7 +5,7 @@ import { createServiceContext, ServiceComponent } from '../utils/ServiceComponen
 import firebase from 'react-native-firebase';
 import { User } from '../login/LoginContext';
 
-type List = {
+export type List = {
     name: string,
     author: string,
 
@@ -15,7 +15,7 @@ const initialState = {
     text: 'Hello'
 }
 
-class ListService extends ServiceComponent {
+export class ListService extends ServiceComponent {
 
     constructor() {
         super(initialState);
