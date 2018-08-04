@@ -5,7 +5,7 @@ import { createServiceContext, ServiceComponent } from '../utils/ServiceComponen
 import firebase from 'react-native-firebase';
 import { User } from '../login/LoginContext';
 
-export type List = {
+export type ShoppingList = {
     name: string,
     author: string,
 
@@ -21,14 +21,19 @@ export class ListService extends ServiceComponent {
         super(initialState);
     }
 
-    getLists = async (user) => {
+    getLists = async (user, onSnapshot) => {
 
+        let query = firebase.firestore().collection('lists')
+            .orderBy('name');
 
+        let subscription = query.onSnapshot(snapshot => {
+            onSnapshot(snapshot);
+        });
         
-        return true;
+        return subscription;
     }
 
-    addList = async (user: User, list: List) => {
+    addList = async (user: User, list: ShoppingList) => {
         console.info('Saving list for ' + user.username);
     
         list = {

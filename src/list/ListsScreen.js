@@ -1,22 +1,65 @@
+// @flow
+
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import ListContext from './ListContext';
-import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab } from 'native-base';
-import LoginContext from '../login/LoginContext';
+import ListContext, { ShoppingList } from './ListContext';
+import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List } from 'native-base';
+import LoginContext, { User } from '../login/LoginContext';
 
-class ListsScreen extends React.Component {
+
+type Props = {
+    listService: ListService,
+    loginService: LoginService
+}
+
+class ListsScreen extends React.Component<Props> {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            lists: []
+        }
     }
 
     async componentDidMount() {
-        
+        this.loadLists();
+    }
+
+    componentWillUnmount() {
+        this.unsubscribeLists();
     }
     
     componentDidUpdate(prevProps, prevState) {
         // Previous SomeContext value is prevProps.someValue
         // New SomeContext value is this.props.someValue
+    }
+
+    async loadLists() {
+        this.unsubscribeLists();
+
+        let user: User = await this.props.loginService.getUser();
+
+        let subscription = this.props.listService.getLists(user, (snapshot) => {
+            let lists = [];
+            snapshot.forEach(doc => {
+                let list: ShoppingList = { ...doc.data(), id: doc.id };
+                console.info(JSON.stringify(list));
+                lists.push(list);
+            });
+
+            this.setState({
+                lists: lists
+            });
+        });
+        this.state.listsSubscription = subscription;
+    }
+
+    unsubscribeLists() {
+        if(this.state.listsSubscription) {
+            this.state.listsSubscription();
+            this.state.listsSubscription = null;
+        }
     }
 
     onAddList() {
@@ -42,7 +85,14 @@ class ListsScreen extends React.Component {
                 </Header>
                 <View style={{ flex: 1 }}>
                     <Content>
-                        <Text>Hello world!</Text>
+                        <List>
+                            { this.state.lists.map(list => (
+                                    <ListItem key={list.id}>
+                                        <Text>{ list.name }</Text>
+                                    </ListItem> 
+                                ))
+                            }
+                        </List>
                     </Content>
                     <Fab
                         containerStyle={{ }}

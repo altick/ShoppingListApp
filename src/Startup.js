@@ -8,7 +8,7 @@ import ListContext from './list/ListContext';
 class StartupComponent extends React.Component {
 
     async componentDidMount() {
-      let status = await this.props.loginService.actions.validateUser();
+      let status = await this.props.loginService.validateUser();
       if(status) {
         this.props.navigation.replace('Lists');
       } else {

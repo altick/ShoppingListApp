@@ -26,7 +26,7 @@ class AddListScreen extends React.Component<Props> {
             this.listNameInput.focus();
         }, 500);
     }
-    
+
     componentDidUpdate(prevProps, prevState) {
         // Previous SomeContext value is prevProps.someValue
         // New SomeContext value is this.props.someValue
@@ -39,13 +39,13 @@ class AddListScreen extends React.Component<Props> {
             return this.listNameInput.shake();
         }
 
-        let user: User = await this.props.loginService.actions.getUser();
+        let user: User = await this.props.loginService.getUser();
         let list: List = {
             author: user.id,
-            name: this.props.listName
+            name: this.state.listName
         }
 
-        await this.props.listService.actions.addList(user, list);
+        await this.props.listService.addList(user, list);
 
         this.navigateBack();
     }

@@ -36,10 +36,9 @@ export function createServiceContext(serviceComponent) {
                 if(typeof f == 'function') {
                     actions[k] = f;
                 }
-
             }
 
-            this.state = { ...serviceComponent.initialState, actions: { ...actions } };
+            this.state = { ...serviceComponent.initialState, ...actions };
 
             // console.log('Service component created ' + serviceComponent.constructor.name);
         }

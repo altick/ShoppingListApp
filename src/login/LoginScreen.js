@@ -118,7 +118,7 @@ class LoginScreen2 extends Component {
     }
     
     try {
-      await this.props.loginService.actions.loginUser(email, password);
+      await this.props.loginService.loginUser(email, password);
 
       this.props.navigation.push('Lists');
     } catch(err) {
