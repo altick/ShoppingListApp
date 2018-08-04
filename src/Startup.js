@@ -3,16 +3,17 @@
 import * as React from 'react';
 import LoginContext from './login/LoginContext';
 import { StyleSheet, View, Text } from 'react-native';
+import ListContext from './list/ListContext';
 
 class StartupComponent extends React.Component {
 
     async componentDidMount() {
-      // let status = await this.props.actions.validateUser();
-      // if(status) {
-      //   this.props.navigation.replace('Feed');
-      // } else {
+      let status = await this.props.loginService.actions.validateUser();
+      if(status) {
+        this.props.navigation.replace('Lists');
+      } else {
         this.props.navigation.replace('Login');
-      // }
+      }
     }
   
     render() {
@@ -36,8 +37,15 @@ let styles = StyleSheet.create({
   
 export default Startup = props => (
     <LoginContext.Consumer>
-      {loginState => (
-          <StartupComponent {...props} {...loginState} ></StartupComponent>
-      )}
+        { loginService => (
+        <ListContext.Consumer>
+          { listState => (
+              <StartupComponent { ...props } 
+                loginService={ loginService } 
+                listService={ listState } 
+              ></StartupComponent>
+          )}
+        </ListContext.Consumer>
+        )}
     </LoginContext.Consumer>
 );

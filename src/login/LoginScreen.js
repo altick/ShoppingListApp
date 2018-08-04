@@ -118,9 +118,9 @@ class LoginScreen2 extends Component {
     }
     
     try {
-      await this.props.actions.loginUser(email, password);
+      await this.props.loginService.actions.loginUser(email, password);
 
-      // this.props.navigation.push('Feed');
+      this.props.navigation.push('Lists');
     } catch(err) {
       this.setState({
 
@@ -402,8 +402,10 @@ const styles = StyleSheet.create({
 
 let LoginScreenWithContext = props => (
   <LoginContext.Consumer>
-      {loginState => (
-          <LoginScreen2 { ...props } {...loginState} ></LoginScreen2>
+      {loginService => (
+          <LoginScreen2 { ...props }
+                loginService={ loginService } 
+          ></LoginScreen2>
       ) }
   </LoginContext.Consumer>
 );

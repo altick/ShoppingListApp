@@ -3,6 +3,7 @@
 import { createStackNavigator } from 'react-navigation';
 import Startup from '../Startup';
 import LoginScreenWithContext from '../login/LoginScreen';
+import ListsScreenWithContext from '../list/ListsScreen';
 
 const MainStack = createStackNavigator({
     Startup: {
@@ -11,6 +12,9 @@ const MainStack = createStackNavigator({
     Login: {
         screen: LoginScreenWithContext
     },
+    Lists: {
+        screen: ListsScreenWithContext
+    }
     // Feed: {
     //     screen: FeedPageWithContext
     // }

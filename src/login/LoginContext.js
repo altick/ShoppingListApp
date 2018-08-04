@@ -4,6 +4,11 @@ import { AsyncStorage } from 'react-native';
 import { createServiceContext, ServiceComponent } from '../utils/ServiceComponent';
 import firebase from 'react-native-firebase';
 
+export type User = {
+    id: string,
+    username: string
+}
+
 class LoginService extends ServiceComponent {
 
     constructor() {
@@ -34,7 +39,7 @@ class LoginService extends ServiceComponent {
 
         let userCred = await firebase.auth().signInAndRetrieveDataWithEmailAndPassword(username, password);
 
-        let user = {
+        let user: User = {
             id: userCred.user.uid,
             username: userCred.user.displayName || userCred.user.email
         }
