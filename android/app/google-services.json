@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "553728670418",
+    "firebase_url": "https://shoppinglist-5fa1b.firebaseio.com",
+    "project_id": "shoppinglist-5fa1b",
+    "storage_bucket": "shoppinglist-5fa1b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553728670418:android:0bdc56f477ec9817",
+        "android_client_info": {
+          "package_name": "com.altick.shoppinglist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "553728670418-nqhfuk3boijt12bh8d96l6hualup4grf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLU3XDJ4DEiKn1yOvkuy_RZm6DA0bCRLQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
