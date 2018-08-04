@@ -11,7 +11,7 @@ class StartupComponent extends React.Component {
       // if(status) {
       //   this.props.navigation.replace('Feed');
       // } else {
-      //   this.props.navigation.replace('Login');
+        this.props.navigation.replace('Login');
       // }
     }
   
