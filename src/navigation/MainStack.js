@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { createStackNavigator } from 'react-navigation';
-import LoginScreenWithContext from '../login/components/LoginScreen';
 import Startup from '../Startup';
 
 const MainStack = createStackNavigator({
