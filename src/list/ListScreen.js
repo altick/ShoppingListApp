@@ -65,7 +65,7 @@ class ListScreen extends React.Component<Props> {
     onAddItem() {
         console.info('Add item');
 
-        this.props.navigation.push('AddItem');
+        this.props.navigation.push('AddItem', { list: this.props.navigation.getParam('list') });
     }
 
     navigateBack() {
@@ -86,7 +86,7 @@ class ListScreen extends React.Component<Props> {
                         </Button>
                     </Left>
                     <Body>
-                        <Title>...{ list.name }</Title>
+                        <Title>{ list.name }</Title>
                     </Body>
                 </Header>
                 <View style={{ flex: 1 }}>
@@ -104,7 +104,7 @@ class ListScreen extends React.Component<Props> {
                         containerStyle={{ }}
                         style={{ backgroundColor: '#5067FF' }}
                         position="bottomRight"
-                        onPress={() => this.onAddList() }>
+                        onPress={() => this.onAddItem() }>
                         <Icon name="add" />
                     </Fab>
                 </View>

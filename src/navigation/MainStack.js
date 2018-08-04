@@ -6,6 +6,7 @@ import LoginScreenWithContext from '../login/LoginScreen';
 import ListsScreenWithContext from '../list/ListsScreen';
 import AddListScreenWithContext from '../list/AddListScreen';
 import ListScreenWithContext from '../list/ListScreen';
+import AddItemScreenWithContext from '../list/AddItemScreen';
 
 const MainStack = createStackNavigator({
     Startup: {
@@ -22,6 +23,9 @@ const MainStack = createStackNavigator({
     },
     AddList: {
         screen: AddListScreenWithContext
+    },
+    AddItem: {
+        screen: AddItemScreenWithContext
     }
     // Feed: {
     //     screen: FeedPageWithContext
