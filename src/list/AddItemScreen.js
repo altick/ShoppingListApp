@@ -1,6 +1,6 @@
 import React from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
-import ListContext, { ListService, List } from './ListContext';
+import ListContext, { ListService, List, ProductItem } from './ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, Form, Right, Item } from 'native-base';
 import LoginContext, { LoginService, User } from '../login/LoginContext';
 
@@ -39,13 +39,14 @@ class AddItemScreen extends React.Component<Props> {
             return this.itemNameInput.shake();
         }
 
-        // let user: User = await this.props.loginService.getUser();
-        // let list: List = {
-        //     author: user.id,
-        //     name: this.state.itemName
-        // }
+        let list = this.props.navigation.getParam('list');
+        let user: User = await this.props.loginService.getUser();
+        let item: ProductItem = {
+            author: user.id,
+            name: this.state.itemName
+        }
 
-        // await this.props.listService.addList(user, list);
+        await this.props.listService.addItem(user, list.id, item);
 
         this.navigateBack();
     }
