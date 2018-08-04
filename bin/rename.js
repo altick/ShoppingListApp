@@ -3,7 +3,7 @@ const readline = require('readline');
 const replace = require('replace-in-file');
 
 const BASE_DIRECTORY = './';
-const DEFAULT_COMPANY_NAME = 'Altick';
+const DEFAULT_COMPANY_NAME = 'altick';
 const DEFAULT_PACKAGE_NAME = 'com.altick.reactnativefirebaseappbase';
 const DEFAULT_PROJECT_NAME = 'ReactNativeFirebaseAppBase';
 const VALID_CHARACTERS = /^[a-zA-Z\s]+$/;
