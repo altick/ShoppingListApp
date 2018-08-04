@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ListContext from './ListContext';
+import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab } from 'native-base';
 
 class ListsScreen extends React.Component {
 
@@ -17,13 +18,40 @@ class ListsScreen extends React.Component {
         // New SomeContext value is this.props.someValue
     }
 
+    onAddList() {
+        console.info('Add list');
+
+        this.props.navigation.push('AddList');
+    }
+
     render() {
         const {  } = this.props;
         
         return (
-            <View>
-                <Text>Hello</Text>
+            <Container>
+            <Header>
+                <Left>
+                    <Button transparent>
+                        <Icon name='menu' />
+                    </Button>
+                </Left>
+                <Body>
+                    <Title>Shopping Lists</Title>
+                </Body>
+            </Header>
+            <View style={{ flex: 1 }}>
+                <Content>
+                    <Text>Hello world!</Text>
+                </Content>
+                <Fab
+                    containerStyle={{ }}
+                    style={{ backgroundColor: '#5067FF' }}
+                    position="bottomRight"
+                    onPress={() => this.onAddList() }>
+                    <Icon name="add" />
+                </Fab>
             </View>
+          </Container>
         );
     }
 }

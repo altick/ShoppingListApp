@@ -4,6 +4,7 @@ import { createStackNavigator } from 'react-navigation';
 import Startup from '../Startup';
 import LoginScreenWithContext from '../login/LoginScreen';
 import ListsScreenWithContext from '../list/ListsScreen';
+import AddListScreenWithContext from '../list/AddListScreen';
 
 const MainStack = createStackNavigator({
     Startup: {
@@ -14,6 +15,9 @@ const MainStack = createStackNavigator({
     },
     Lists: {
         screen: ListsScreenWithContext
+    },
+    AddList: {
+        screen: AddListScreenWithContext
     }
     // Feed: {
     //     screen: FeedPageWithContext
