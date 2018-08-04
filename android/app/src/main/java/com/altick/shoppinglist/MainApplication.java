@@ -1,4 +1,4 @@
-package com.altick.reactnativefirebaseappbase;
+package com.altick.shoppinglist;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
