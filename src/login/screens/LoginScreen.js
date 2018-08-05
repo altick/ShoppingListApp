@@ -89,10 +89,12 @@ class LoginScreen2 extends Component {
       password,
     } = this.state;
 
-    email = 'altick87@hotmail.com';
-    // email = 'altman.petr@gmail.com';
-    password = 'Heslo1234';
-
+    
+    if(__DEV__) {
+      email = 'altick87@hotmail.com';
+      // email = 'altman.petr@gmail.com';
+      password = 'Heslo1234';
+    }
 
     this.setState({ isLoading: true });
     // Simulate an API call
