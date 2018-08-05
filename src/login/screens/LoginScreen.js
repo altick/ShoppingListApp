@@ -15,12 +15,12 @@ import { Input, Button } from 'react-native-elements'
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons';
-import LoginContext from './LoginContext';
+import LoginContext from '../LoginContext';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-const BG_IMAGE = require('../../assets/images/bg_screen4.jpg');
+const BG_IMAGE = require('../../../assets/images/bg_screen4.jpg');
 
 // Enable LayoutAnimation on Android
 UIManager.setLayoutAnimationEnabledExperimental

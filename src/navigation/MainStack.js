@@ -2,11 +2,11 @@
 
 import { createStackNavigator } from 'react-navigation';
 import Startup from '../Startup';
-import LoginScreenWithContext from '../login/LoginScreen';
-import ListsScreenWithContext from '../list/ListsScreen';
-import AddListScreenWithContext from '../list/AddListScreen';
-import ListScreenWithContext from '../list/ListScreen';
-import AddItemScreenWithContext from '../list/AddItemScreen';
+import LoginScreenWithContext from '../login/screens/LoginScreen';
+import ListsScreenWithContext from '../list/screens/ListsScreen';
+import AddListScreenWithContext from '../list/screens/AddListScreen';
+import ListScreenWithContext from '../list/screens/ListScreen';
+import AddItemScreenWithContext from '../list/screens/AddItemScreen';
 
 const MainStack = createStackNavigator({
     Startup: {

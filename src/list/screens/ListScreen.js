@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import ListContext, { ShoppingList, ProductItem } from './ListContext';
+import ListContext, { ShoppingList, ProductItem } from '../ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List, CheckBox, Right } from 'native-base';
-import LoginContext, { User } from '../login/LoginContext';
+import LoginContext, { User } from '../../login/LoginContext';
 
 
 type Props = {

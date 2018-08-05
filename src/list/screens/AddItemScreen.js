@@ -1,8 +1,8 @@
 import React from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
-import ListContext, { ListService, List, ProductItem } from './ListContext';
+import ListContext, { ListService, List, ProductItem } from '../ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, Form, Right, Item } from 'native-base';
-import LoginContext, { LoginService, User } from '../login/LoginContext';
+import LoginContext, { LoginService, User } from '../../login/LoginContext';
 
 import { Input } from 'react-native-elements'
 
@@ -24,7 +24,7 @@ class AddItemScreen extends React.Component<Props> {
     async componentDidMount() {
         setTimeout(() => {
             this.itemNameInput.focus();
-        }, 500);
+        }, 200);
     }
 
     componentDidUpdate(prevProps, prevState) {
