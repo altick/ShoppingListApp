@@ -12,7 +12,8 @@ export type ShoppingList = {
 
 export type ProductItem = {
     name: string,
-    author: string
+    author: string,
+    checked: boolean
 }
 
 const initialState = {
@@ -75,6 +76,12 @@ export class ListService extends ServiceComponent {
         });
         
         return subscription;
+    }
+
+    updateItem = async (user, listId, itemId, item) => {
+        let ref = firebase.firestore().collection('lists').doc(listId).collection('items').doc(itemId);
+
+        await ref.update(item);
     }
 
 }

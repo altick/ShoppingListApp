@@ -3,13 +3,19 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ListContext, { ShoppingList, ProductItem } from './ListContext';
-import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List } from 'native-base';
+import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List, CheckBox } from 'native-base';
 import LoginContext, { User } from '../login/LoginContext';
 
 
 type Props = {
     listService: ListService,
     loginService: LoginService
+}
+
+const itemDefaults: ProductItem = {
+    name: '',
+    checked: false,
+    author: null
 }
 
 class ListScreen extends React.Component<Props> {
@@ -20,7 +26,9 @@ class ListScreen extends React.Component<Props> {
         super(props);
 
         this.state = {
-            items: []
+            items: [],
+            user: this.props.loginService.user,
+            list: this.props.navigation.getParam('list')
         }
     }
 
@@ -41,12 +49,12 @@ class ListScreen extends React.Component<Props> {
         this.unsubscribeItems();
 
         let list = this.props.navigation.getParam('list');
-        let user: User = await this.props.loginService.getUser();
+        let user: User = this.props.loginService.user;
 
         let subscription = await this.props.listService.getItems(user, list.id, (snapshot) => {
             let items = [];
             snapshot.forEach(doc => {
-                let item: ProductItem = { ...doc.data(), id: doc.id };
+                let item: ProductItem = { ...itemDefaults, ...doc.data(), id: doc.id };
                 console.info(JSON.stringify(item));
                 items.push(item);
             });
@@ -68,11 +76,23 @@ class ListScreen extends React.Component<Props> {
     onAddItem() {
         console.info('Add item');
 
-        this.props.navigation.push('AddItem', { list: this.props.navigation.getParam('list') });
+        this.props.navigation.push('AddItem', { list: this.state.list });
     }
 
     navigateBack() {
         this.props.navigation.popToTop()
+    }
+
+    async onItemClick(item: ProductItem) {
+        console.info('Item ' + item.name);
+
+        item.checked = !item.checked;
+
+        let user: User = this.state.user;
+
+        await this.props.listService.updateItem(user, this.state.list.id, item.id, item);
+
+        this.forceUpdate();
     }
 
     render() {
@@ -96,8 +116,11 @@ class ListScreen extends React.Component<Props> {
                     <Content>
                         <List>
                             { this.state.items.map(item => (
-                                    <ListItem key={item.id} button={true} onPress={ () => {} } >
-                                        <Text>{ item.name }</Text>
+                                    <ListItem key={item.id} button={true} onPress={ () => this.onItemClick(item) } >
+                                        <CheckBox checked={item.checked} />
+                                        <Body>
+                                            <Text>{ item.name }</Text>
+                                        </Body>
                                     </ListItem> 
                                 ))
                             }

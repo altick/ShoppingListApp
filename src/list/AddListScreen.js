@@ -39,7 +39,7 @@ class AddListScreen extends React.Component<Props> {
             return this.listNameInput.shake();
         }
 
-        let user: User = await this.props.loginService.getUser();
+        let user: User = this.props.loginService.user;
         let list: List = {
             author: user.id,
             name: this.state.listName

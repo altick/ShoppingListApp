@@ -39,7 +39,7 @@ class ListsScreen extends React.Component<Props> {
     async loadLists() {
         this.unsubscribeLists();
 
-        let user: User = await this.props.loginService.getUser();
+        let user: User = this.props.loginService.user;
 
         let subscription = await this.props.listService.getLists(user, (snapshot) => {
             let lists = [];

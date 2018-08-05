@@ -40,7 +40,7 @@ class AddItemScreen extends React.Component<Props> {
         }
 
         let list = this.props.navigation.getParam('list');
-        let user: User = await this.props.loginService.getUser();
+        let user: User = this.props.loginService.user;
         let item: ProductItem = {
             author: user.id,
             name: this.state.itemName
