@@ -97,6 +97,8 @@ class ListScreen extends React.Component<Props> {
 
     async onShareList() {
         console.info('Share this list');
+
+        this.props.navigation.push('ShareList', { list: this.state.list });
     }
 
     render() {

@@ -7,6 +7,7 @@ import ListsScreenWithContext from '../list/screens/ListsScreen';
 import AddListScreenWithContext from '../list/screens/AddListScreen';
 import ListScreenWithContext from '../list/screens/ListScreen';
 import AddItemScreenWithContext from '../list/screens/AddItemScreen';
+import ShareListScreenWithContext from '../list/screens/ShareListScreen';
 
 const MainStack = createStackNavigator({
     Startup: {
@@ -26,10 +27,10 @@ const MainStack = createStackNavigator({
     },
     AddItem: {
         screen: AddItemScreenWithContext
+    },
+    ShareList: {
+        screen: ShareListScreenWithContext
     }
-    // Feed: {
-    //     screen: FeedPageWithContext
-    // }
 },
 {
   initialRouteName: 'Startup',
