@@ -15,7 +15,7 @@ import { Input, Button } from 'react-native-elements'
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons';
-import LoginContext from '../LoginContext';
+import LoginContext, { SignupUser } from '../LoginContext';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -88,7 +88,6 @@ class LoginScreen2 extends Component {
       email,
       password,
     } = this.state;
-    LayoutAnimation.easeInEaseOut();
 
     email = 'altick87@hotmail.com';
     password = 'Heslo1234';
@@ -105,6 +104,7 @@ class LoginScreen2 extends Component {
     //   });
     // }, 1500);
 
+    LayoutAnimation.easeInEaseOut();
     let isEmailValid = this.validateEmail(email) || this.emailInput.shake();
     let isPasswordValid = password.length >= 8 || this.passwordInput.shake();
 
@@ -120,9 +120,10 @@ class LoginScreen2 extends Component {
     try {
       await this.props.loginService.loginUser(email, password);
 
-      this.props.navigation.push('Lists');
+      this.onLoginSuccess();
     } catch(err) {
-      this.setState({
+        console.info(err.message);
+        this.setState({
 
       })
     } finally {
@@ -132,23 +133,49 @@ class LoginScreen2 extends Component {
     }
   }
 
-  signUp() {
+  async signUp() {
     const {
       email,
       password,
       passwordConfirmation,
     } = this.state;
     this.setState({ isLoading: true });
-    // Simulate an API call
-    setTimeout(() => {
-      LayoutAnimation.easeInEaseOut();
-      this.setState({
-        isLoading: false,
-        isEmailValid: this.validateEmail(email) || this.emailInput.shake(),
-        isPasswordValid: password.length >= 8 || this.passwordInput.shake(),
-        isConfirmationValid: password == passwordConfirmation || this.confirmationInput.shake(),
-      });
-    }, 1500);
+
+    LayoutAnimation.easeInEaseOut();
+    let isEmailValid = this.validateEmail(email) || this.emailInput.shake();
+    let isPasswordValid = password.length >= 8 || this.passwordInput.shake();
+    let isConfirmationValid = password == passwordConfirmation || this.confirmationInput.shake();
+
+    if(isEmailValid && isPasswordValid && isConfirmationValid) {
+      let newUser: SignupUser = {
+        email: email,
+        password: password
+      };
+
+      try {
+        await this.props.loginService.signupUser(newUser);
+
+        this.onLoginSuccess();
+      } catch(err) {
+        console.info(err);
+        this.setState({
+
+        })
+      } finally {
+
+      }
+    }
+
+    this.setState({
+      isLoading: false,
+      isEmailValid,
+      isPasswordValid,
+      isConfirmationValid
+    });
+  }
+
+  onLoginSuccess() {
+    this.props.navigation.replace('Lists');
   }
 
   render() {

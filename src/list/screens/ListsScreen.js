@@ -3,7 +3,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ListContext, { ShoppingList } from '../ListContext';
-import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List } from 'native-base';
+import { Container, Header, Content, Button, Body, Title, Icon, Left, Right, Fab, ListItem, List } from 'native-base';
 import LoginContext, { User } from '../../login/LoginContext';
 
 type Props = {
@@ -76,6 +76,12 @@ class ListsScreen extends React.Component<Props> {
         this.props.navigation.push('Items',{ list: list });
     }
 
+    async onLogout() {
+        await this.props.loginService.logoutUser();
+
+        this.props.navigation.replace('Login');
+    }
+
     render() {
         const {  } = this.props;
         
@@ -90,6 +96,11 @@ class ListsScreen extends React.Component<Props> {
                     <Body>
                         <Title>Shopping Lists</Title>
                     </Body>
+                    <Right>
+                        <Button transparent onPress={ () => this.onLogout() }>
+                            <Icon name='logout' type="MaterialCommunityIcons" />
+                        </Button>
+                    </Right>
                 </Header>
                 <View style={{ flex: 1 }}>
                     <Content>

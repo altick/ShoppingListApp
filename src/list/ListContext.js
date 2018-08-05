@@ -8,7 +8,7 @@ import { User } from '../login/LoginContext';
 export type ShoppingList = {
     name: string,
     author: {
-        id: string,
+        uid: string,
         username: string
     }
 }
@@ -17,7 +17,7 @@ export type ProductItem = {
     name: string,
     checked: boolean,
     author: {
-        id: string,
+        uid: string,
         username: string
     }
 }
@@ -63,7 +63,7 @@ export class ListService extends ServiceComponent {
     
         item = {
             ... item,
-            author: user,
+            author: { uid: user.uid },
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 

@@ -2,11 +2,19 @@
 
 import { AsyncStorage } from 'react-native';
 import { createServiceContext, ServiceComponent } from '../utils/ServiceComponent';
-import firebase from 'react-native-firebase';
+import firebase, { RNFirebase } from 'react-native-firebase';
 
 export type User = {
-    id: string,
-    username: string
+    uid: string,
+    email: string,
+    username: string,
+    createdAt: Date,
+    sharedLists: Array<string>
+}
+
+export type SignupUser = {
+    email: string,
+    password: string
 }
 
 export class LoginService extends ServiceComponent {
@@ -37,10 +45,11 @@ export class LoginService extends ServiceComponent {
 
         let userCred = await firebase.auth().signInAndRetrieveDataWithEmailAndPassword(username, password);
 
-        let user: User = {
-            id: userCred.user.uid,
-            username: userCred.user.displayName || userCred.user.email
-        }
+        await this._loginUser(userCred);
+    }
+
+    _loginUser = async(userCred: RNFirebase.UserCredential) => {
+        let user: User = await this.loadUser(userCred.user.uid);
     
         await AsyncStorage.setItem('auth:current-user', JSON.stringify(user));
 
@@ -58,6 +67,43 @@ export class LoginService extends ServiceComponent {
         await firebase.auth().signOut();
     
         await AsyncStorage.removeItem('auth:current-user');
+    }
+
+    signupUser = async (user: SignupUser) => {
+        let userCred = await firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(user.email, user.password);
+
+        let tasks = [
+            this._saveUser(userCred.user),
+            userCred.user.sendEmailVerification(),
+            this._loginUser(userCred)
+        ];
+        await Promise.all(tasks);
+    }
+
+    _saveUser = async (user: RNFirebase.User) => {
+
+        let userData: User = {
+            uid: user.uid,
+            email: user.email,
+            username: user.displayName || user.email,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            sharedLists: []
+        }
+
+        let ref = await firebase.firestore().collection('users').add(userData);
+    }
+
+    loadUser = async (uid: string) => {
+        let ref = firebase.firestore().collection('users').where('uid', '==', uid).limit(1);
+
+        let result = await ref.get();
+
+        if(result.empty) {
+            throw new Error('User not found');
+        }
+
+        let user = result.docs[0].data();
+        return user;
     }
 
     getUser = async () => {
