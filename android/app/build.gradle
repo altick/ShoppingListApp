@@ -108,6 +108,7 @@ android {
   compileSdkVersion 27
 
   defaultConfig {
+    multiDexEnabled true
     applicationId "com.altick.shoppinglist"
     minSdkVersion 18
     targetSdkVersion 27
@@ -175,6 +176,7 @@ dependencies {
   // RNFirebase required dependencies
   implementation "com.google.firebase:firebase-core:16.0.1"
   implementation "com.google.android.gms:play-services-base:15.0.1"
+  implementation 'com.android.support:multidex:1.0.1'
 
   // RNFirebase optional dependencies
   implementation "com.google.firebase:firebase-ads:15.0.1"
