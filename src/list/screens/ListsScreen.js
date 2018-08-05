@@ -21,9 +21,20 @@ class ListsScreen extends React.Component<Props> {
         this.state = {
             lists: []
         }
+
+        willFocus = this.props.navigation.addListener(
+            'willFocus',
+            payload => {
+                this.onFocus();
+            }
+        );
     }
 
     async componentDidMount() {
+        console.info('lists mount');
+    }
+
+    onFocus() {
         this.loadLists();
     }
 

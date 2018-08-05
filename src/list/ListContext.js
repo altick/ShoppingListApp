@@ -32,16 +32,22 @@ export class ListService extends ServiceComponent {
         super(initialState);
     }
 
-    getLists = async (user, onSnapshot) => {
-
+    getLists = async (user: User, onSnapshot) => {
+        const uid = user.uid;
         let query = firebase.firestore().collection('lists')
+            .where('author.uid', '==', uid)
             .orderBy('name');
 
         let subscription = query.onSnapshot(snapshot => {
             onSnapshot(snapshot);
+            subscription();
         });
-        
-        return subscription;
+
+        // return subscription;
+
+        // let snapshot = await query.get();
+        // console.info('get ok');
+        // onSnapshot(snapshot);
     }
 
     addList = async (user: User, list: ShoppingList) => {
@@ -49,7 +55,7 @@ export class ListService extends ServiceComponent {
     
         list = {
             ... list,
-            author: user,
+            author: { uid: user.uid, username: user.username },
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
@@ -63,7 +69,7 @@ export class ListService extends ServiceComponent {
     
         item = {
             ... item,
-            author: { uid: user.uid },
+            author: { uid: user.uid, username: user.username },
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 

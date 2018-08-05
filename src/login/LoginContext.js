@@ -72,8 +72,9 @@ export class LoginService extends ServiceComponent {
     signupUser = async (user: SignupUser) => {
         let userCred = await firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(user.email, user.password);
 
+        await this._saveUser(userCred.user);
+
         let tasks = [
-            this._saveUser(userCred.user),
             userCred.user.sendEmailVerification(),
             this._loginUser(userCred)
         ];
@@ -90,11 +91,11 @@ export class LoginService extends ServiceComponent {
             sharedLists: []
         }
 
-        let ref = await firebase.firestore().collection('users').add(userData);
+        await firebase.firestore().collection('users').doc(user.uid).set(userData);
     }
 
     loadUser = async (uid: string) => {
-        let ref = firebase.firestore().collection('users').where('uid', '==', uid).limit(1);
+        let ref = firebase.firestore().collection('users').doc(uid);
 
         let result = await ref.get();
 
@@ -102,7 +103,7 @@ export class LoginService extends ServiceComponent {
             throw new Error('User not found');
         }
 
-        let user = result.docs[0].data();
+        let user = result.data();
         return user;
     }
 
