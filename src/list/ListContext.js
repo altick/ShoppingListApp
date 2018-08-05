@@ -6,7 +6,10 @@ import firebase from 'react-native-firebase';
 import { User } from '../login/LoginContext';
 
 export type ShoppingList = {
+    id?: string,
     name: string,
+    isShared?: boolean,
+    refId?: string,
     author: {
         uid: string,
         username: string
@@ -26,6 +29,25 @@ const initialState = {
     text: 'Hello'
 }
 
+const getListsCollectionRef = (uid) => {
+    return firebase.firestore()
+        .collection('users')
+        .doc(uid)
+        .collection('lists');
+}
+
+const getListRef = (user, list) => {
+    let userRef: User = list.isShared
+        ? list.author
+        : user;
+
+    let listId = list.isShared
+        ? list.refId
+        : list.id;
+
+    return getListsCollectionRef(userRef.uid).doc(listId);
+}
+
 export class ListService extends ServiceComponent {
 
     constructor() {
@@ -33,9 +55,7 @@ export class ListService extends ServiceComponent {
     }
 
     getLists = async (user: User, onSnapshot) => {
-        const uid = user.uid;
-        let query = firebase.firestore().collection('lists')
-            .where('author.uid', '==', uid);
+        let query = getListsCollectionRef(user.uid);
 
         let subscription = query.onSnapshot(snapshot => {
             onSnapshot(snapshot);
@@ -49,16 +69,17 @@ export class ListService extends ServiceComponent {
     
         list = {
             ... list,
-            author: { uid: user.uid, username: user.username },
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        let db = firebase.firestore();
+        if(!list.isShared) {
+            list.author = { uid: user.uid, username: user.username };
+        }
     
-        await db.collection('lists').add(list);
+        await getListsCollectionRef(user.uid).add(list);
     }
 
-    addItem = async (user: User, listId: string, item: ProductItem) => {
+    addItem = async (user: User, list: ShoppingList, item: ProductItem) => {
         console.info('Saving item for ' + user.username);
     
         item = {
@@ -66,15 +87,13 @@ export class ListService extends ServiceComponent {
             author: { uid: user.uid, username: user.username },
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
-
-        let db = firebase.firestore();
     
-        await db.collection('lists').doc(listId).collection('items').add(item);
+        await getListRef(user, list).collection('items').add(item);
     }
 
-    getItems = async (user, listId, onSnapshot) => {
+    getItems = async (user, list, onSnapshot) => {
 
-        let query = firebase.firestore().collection('lists').doc(listId).collection('items')
+        let query = getListRef(user, list).collection('items')
             .orderBy('name');
 
         let subscription = query.onSnapshot(snapshot => {
@@ -84,16 +103,30 @@ export class ListService extends ServiceComponent {
         return subscription;
     }
 
-    updateItem = async (user, listId, itemId, item) => {
-        let ref = firebase.firestore().collection('lists').doc(listId).collection('items').doc(itemId);
+    updateItem = async (user, list, itemId, item) => {
+        let ref = getListRef(user, list).collection('items').doc(itemId);
 
         await ref.update(item);
     }
 
-    shareList = async (user, listId, email) => {
-        let ref = firebase.firestore().collection('users').where('username', 'eq', email);
+    shareList = async (user, list, email) => {
+        let db = firebase.firestore();
+        let ref = db.collection('users').where('email', '==', email);
+        let result = await ref.get();
 
-        console.info(ref);
+        if(result.empty) {
+            throw new Error('User with this email not found!');
+        }
+
+        let userToShareWith: User = result.docs[0].data();
+
+        let listRef: ShoppingList = {
+            ...list,
+            isShared: true,
+            refId: list.id
+        };
+
+        await this.addList(userToShareWith, listRef);
     }
 
 }

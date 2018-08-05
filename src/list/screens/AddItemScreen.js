@@ -46,7 +46,7 @@ class AddItemScreen extends React.Component<Props> {
             name: this.state.itemName
         }
 
-        await this.props.listService.addItem(user, list.id, item);
+        await this.props.listService.addItem(user, list, item);
 
         this.navigateBack();
     }

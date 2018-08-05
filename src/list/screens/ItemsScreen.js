@@ -48,10 +48,7 @@ class ItemsScreen extends React.Component<Props> {
     async loadItems() {
         this.unsubscribeItems();
 
-        let list = this.props.navigation.getParam('list');
-        let user: User = this.props.loginService.user;
-
-        let subscription = await this.props.listService.getItems(user, list.id, (snapshot) => {
+        let subscription = await this.props.listService.getItems(this.state.user, this.state.list, (snapshot) => {
             let items = [];
             snapshot.forEach(doc => {
                 let item: ProductItem = { ...itemDefaults, ...doc.data(), id: doc.id };
@@ -90,7 +87,7 @@ class ItemsScreen extends React.Component<Props> {
 
         let user: User = this.state.user;
 
-        this.props.listService.updateItem(user, this.state.list.id, item.id, item);
+        this.props.listService.updateItem(user, this.state.list, item.id, item);
 
         this.forceUpdate();
     }

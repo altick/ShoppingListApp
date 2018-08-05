@@ -35,7 +35,7 @@ class ShareListScreen extends React.Component<Props> {
     }
 
     async save() {
-        await this.props.listService.shareList(this.state.user, this.state.list.id, this.state.emailToAdd);
+        await this.props.listService.shareList(this.state.user, this.state.list, this.state.emailToAdd);
     }
 
 
