@@ -35,19 +35,13 @@ export class ListService extends ServiceComponent {
     getLists = async (user: User, onSnapshot) => {
         const uid = user.uid;
         let query = firebase.firestore().collection('lists')
-            .where('author.uid', '==', uid)
-            .orderBy('name');
+            .where('author.uid', '==', uid);
 
         let subscription = query.onSnapshot(snapshot => {
             onSnapshot(snapshot);
-            subscription();
         });
 
-        // return subscription;
-
-        // let snapshot = await query.get();
-        // console.info('get ok');
-        // onSnapshot(snapshot);
+        return subscription;
     }
 
     addList = async (user: User, list: ShoppingList) => {

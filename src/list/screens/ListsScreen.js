@@ -32,10 +32,11 @@ class ListsScreen extends React.Component<Props> {
 
     async componentDidMount() {
         console.info('lists mount');
+        this.loadLists();
     }
 
     onFocus() {
-        this.loadLists();
+
     }
 
     componentWillUnmount() {
