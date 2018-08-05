@@ -90,7 +90,7 @@ class ListScreen extends React.Component<Props> {
 
         let user: User = this.state.user;
 
-        await this.props.listService.updateItem(user, this.state.list.id, item.id, item);
+        this.props.listService.updateItem(user, this.state.list.id, item.id, item);
 
         this.forceUpdate();
     }

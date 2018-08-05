@@ -7,13 +7,19 @@ import { User } from '../login/LoginContext';
 
 export type ShoppingList = {
     name: string,
-    author: string,
+    author: {
+        id: string,
+        username: string
+    }
 }
 
 export type ProductItem = {
     name: string,
-    author: string,
-    checked: boolean
+    checked: boolean,
+    author: {
+        id: string,
+        username: string
+    }
 }
 
 const initialState = {
@@ -43,7 +49,7 @@ export class ListService extends ServiceComponent {
     
         list = {
             ... list,
-            author: user.id,
+            author: user,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
@@ -57,7 +63,7 @@ export class ListService extends ServiceComponent {
     
         item = {
             ... item,
-            author: user.id,
+            author: user,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
