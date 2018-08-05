@@ -17,6 +17,10 @@
     "ios-log": "react-native log-ios",
     "rename": "node ./bin/rename.js",
     "start": "react-native start",
+    "android-logcat": "adb logcat",
+    "android-clean": "cd android & ./gradlew clean",
+    "android-release": "cd android & ./gradlew assembleRelease",
+    "android-run-release": "react-native run-android --variant=release",
     "test": "jest"
   },
   "jest": {
