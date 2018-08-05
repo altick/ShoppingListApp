@@ -2,9 +2,11 @@
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import ListContext, { ShoppingList, ProductItem } from '../ListContext';
+import ListContext from '../ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List, CheckBox, Right } from 'native-base';
 import LoginContext, { User } from '../../login/LoginContext';
+
+import type { ShoppingList, ProductItem } from '../ListContext';
 
 
 type Props = {
@@ -25,11 +27,14 @@ class ItemsScreen extends React.Component<Props> {
     constructor(props) {
         super(props);
 
+        let list: ShoppingList = this.props.navigation.getParam('list');
         this.state = {
             items: [],
             user: this.props.loginService.user,
-            list: this.props.navigation.getParam('list')
-        }
+            list: list,
+            isOwnList: !list.isShared,
+            isSharedList: list.isShared
+        };
     }
 
     async componentDidMount() {
@@ -115,19 +120,24 @@ class ItemsScreen extends React.Component<Props> {
                         <Title>{ list.name }</Title>
                     </Body>
                     <Right>
-                        <Button transparent onPress={ () => this.onShareList() }>
-                            <Icon name='share' type="Ionicons" />
-                        </Button>
+                        { this.state.isOwnList && (
+                            <Button transparent onPress={ () => this.onShareList() }>
+                                <Icon name='share' type="Ionicons" />
+                            </Button>
+                        )}
                     </Right>
                 </Header>
                 <View style={{ flex: 1 }}>
                     <Content>
                         <List>
                             { this.state.items.map(item => (
-                                    <ListItem key={item.id} button={true} onPress={ () => this.onItemClick(item) } >
-                                        <CheckBox checked={item.checked} onPress={ () => this.onItemClick(item) } />
+                                    <ListItem icon key={item.id} button={true} onPress={ () => this.onItemClick(item) } >
+                                        <Left><CheckBox checked={item.checked} onPress={ () => this.onItemClick(item) } /></Left>
                                         <Body>
-                                            <Text>{ item.name }</Text>
+                                            <Text style={ { fontWeight: 'bold' } }>{ item.name }</Text>
+                                            { (item.author.uid != this.state.user.uid) && (
+                                                <Text note style={ { fontSize: 11 } }>{ item.author.username }</Text>
+                                            ) }
                                         </Body>
                                     </ListItem> 
                                 ))

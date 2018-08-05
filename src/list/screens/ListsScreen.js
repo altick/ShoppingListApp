@@ -128,7 +128,17 @@ class ListsScreen extends React.Component<Props, State> {
                         <List>
                             { this.state.lists.map(list => (
                                     <ListItem key={list.id} button={true} onPress={ () => this.onGotoList(list) } >
-                                        <Text>{ list.name }</Text>
+                                        <Body>
+                                            <Text style={ { fontWeight: 'bold' } }>{ list.name }</Text>
+                                            { list.isShared && (
+                                                <Text note style={ { fontSize: 11 } }>{ list.author.username }</Text>
+                                            ) }
+                                        </Body>
+                                        { list.isShared && (
+                                            <Right>
+                                                <Icon name="slideshare" type="Entypo" />
+                                            </Right>
+                                        ) }
                                     </ListItem> 
                                 ))
                             }
