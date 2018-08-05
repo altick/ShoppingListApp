@@ -90,6 +90,12 @@ export class ListService extends ServiceComponent {
         await ref.update(item);
     }
 
+    shareList = async (user, listId, email) => {
+        let ref = firebase.firestore().collection('users').where('username', 'eq', email);
+
+        console.info(ref);
+    }
+
 }
 
 let ListContext = createServiceContext(new ListService());

@@ -34,6 +34,10 @@ class ShareListScreen extends React.Component<Props> {
         // New SomeContext value is this.props.someValue
     }
 
+    async save() {
+        await this.props.listService.shareList(this.state.user, this.state.list.id, this.state.emailToAdd);
+    }
+
 
     navigateBack() {
         this.props.navigation.pop()
@@ -56,14 +60,18 @@ class ShareListScreen extends React.Component<Props> {
                         <Title>Share { list.name }</Title>
                     </Body>
                     <Right>
-                        <Button transparent light onPress={ () => this.saveItem() }>
+                        <Button transparent light onPress={ () => this.save() }>
                             <Text><Icon name='check' type="MaterialCommunityIcons" />Save</Text>
                         </Button>
                     </Right>
                 </Header>
                 <View style={{ flex: 1 }}>
                     <Content>
-                        <Text>Share with...</Text>
+                        <Input 
+                            ref={ input => this.emailToAddInput = input }
+                            value={ this.state.emailToAdd } 
+                            onChangeText={(emailToAdd) => this.setState({ emailToAdd })}
+                            placeholder="Enter someone's email" />
                     </Content>
                 </View>
             </Container>
