@@ -120,13 +120,28 @@ export class ListService extends ServiceComponent {
 
         let userToShareWith: User = result.docs[0].data();
 
-        let listRef: ShoppingList = {
+        // get the data of the original list
+        let listRef = getListRef(list.author, list);
+        let listData = await listRef.get();
+        // add the target user to the map
+        await listRef.set({ 
+            ...(listData.data()),
+            sharedWith: {
+                [userToShareWith.uid]: {
+                    uid: userToShareWith.uid,
+                    username: userToShareWith.username,
+                    email: userToShareWith.email
+                }
+            }
+        })
+
+        let sharedList: ShoppingList = {
             ...list,
             isShared: true,
             refId: list.id
         };
 
-        await this.addList(userToShareWith, listRef);
+        await this.addList(userToShareWith, sharedList);
     }
 
 }
