@@ -5,9 +5,9 @@ import Startup from '../Startup';
 import LoginScreenWithContext from '../login/screens/LoginScreen';
 import ListsScreenWithContext from '../list/screens/ListsScreen';
 import AddListScreenWithContext from '../list/screens/AddListScreen';
-import ListScreenWithContext from '../list/screens/ListScreen';
 import AddItemScreenWithContext from '../list/screens/AddItemScreen';
 import ShareListScreenWithContext from '../list/screens/ShareListScreen';
+import ItemsScreenWithContext from '../list/screens/ItemsScreen';
 
 const MainStack = createStackNavigator({
     Startup: {
@@ -19,8 +19,8 @@ const MainStack = createStackNavigator({
     Lists: {
         screen: ListsScreenWithContext
     },
-    List: {
-        screen: ListScreenWithContext
+    Items: {
+        screen: ItemsScreenWithContext
     },
     AddList: {
         screen: AddListScreenWithContext

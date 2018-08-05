@@ -18,7 +18,7 @@ const itemDefaults: ProductItem = {
     author: null
 }
 
-class ListScreen extends React.Component<Props> {
+class ItemsScreen extends React.Component<Props> {
 
     itemsSubscription = null;
 
@@ -154,19 +154,19 @@ let styles = StyleSheet.create({
     
 });
 
-let ListScreenWithContext = props => (
+let ItemsScreenWithContext = props => (
     <LoginContext.Consumer>
         {loginService => (
             <ListContext.Consumer>
                 {listService => (
-                    <ListScreen { ...props } 
+                    <ItemsScreen { ...props } 
                         loginService={ loginService }
                         listService={ listService } 
-                    ></ListScreen>
+                    ></ItemsScreen>
                 ) }
             </ListContext.Consumer>
         ) }
     </LoginContext.Consumer>
 );
 
-export default ListScreenWithContext;
+export default ItemsScreenWithContext;

@@ -73,7 +73,7 @@ class ListsScreen extends React.Component<Props> {
     onGotoList(list) {
         console.info(list.name);
        
-        this.props.navigation.push('List',{ list: list });
+        this.props.navigation.push('Items',{ list: list });
     }
 
     render() {
