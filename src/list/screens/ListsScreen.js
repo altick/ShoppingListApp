@@ -104,15 +104,14 @@ class ListsScreen extends React.Component<Props, State> {
     }
 
     render() {
-        const {  } = this.props;
-        
         return (
             <Container>
                 <Header>
                     <Left>
-                        <Button transparent>
+                        {/* <Button transparent>
                             <Icon name='menu' />
-                        </Button>
+                        </Button> */}
+                        <Icon name="checklist" type="Octicons" />
                     </Left>
                     <Body>
                         <Title>Shopping Lists</Title>
