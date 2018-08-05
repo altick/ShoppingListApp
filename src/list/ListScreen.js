@@ -3,7 +3,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ListContext, { ShoppingList, ProductItem } from './ListContext';
-import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List, CheckBox } from 'native-base';
+import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List, CheckBox, Right } from 'native-base';
 import LoginContext, { User } from '../login/LoginContext';
 
 
@@ -95,6 +95,10 @@ class ListScreen extends React.Component<Props> {
         this.forceUpdate();
     }
 
+    async onShareList() {
+        console.info('Share this list');
+    }
+
     render() {
         const { navigation } = this.props;
         
@@ -111,6 +115,11 @@ class ListScreen extends React.Component<Props> {
                     <Body>
                         <Title>{ list.name }</Title>
                     </Body>
+                    <Right>
+                        <Button transparent onPress={ () => this.onShareList() }>
+                            <Icon name='share' type="Ionicons" />
+                        </Button>
+                    </Right>
                 </Header>
                 <View style={{ flex: 1 }}>
                     <Content>
