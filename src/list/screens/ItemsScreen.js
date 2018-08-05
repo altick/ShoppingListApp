@@ -128,7 +128,7 @@ class ItemsScreen extends React.Component<Props> {
                         <List>
                             { this.state.items.map(item => (
                                     <ListItem key={item.id} button={true} onPress={ () => this.onItemClick(item) } >
-                                        <CheckBox checked={item.checked} />
+                                        <CheckBox checked={item.checked} onPress={ () => this.onItemClick(item) } />
                                         <Body>
                                             <Text>{ item.name }</Text>
                                         </Body>
