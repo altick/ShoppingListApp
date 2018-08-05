@@ -2,16 +2,25 @@
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import ListContext, { ShoppingList } from '../ListContext';
+import ListContext, { ListService } from '../ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Right, Fab, ListItem, List } from 'native-base';
-import LoginContext, { User } from '../../login/LoginContext';
+import LoginContext, { LoginService } from '../../login/LoginContext';
+
+import type { ShoppingList } from '../ListContext';
+import type { User } from '../../login/LoginContext';
+
 
 type Props = {
+    navigation: any,
     listService: ListService,
     loginService: LoginService
 }
 
-class ListsScreen extends React.Component<Props> {
+type State = {
+    lists: Array<ShoppingList>
+}
+
+class ListsScreen extends React.Component<Props, State> {
 
     listsSubscription = null;
 
@@ -20,9 +29,9 @@ class ListsScreen extends React.Component<Props> {
 
         this.state = {
             lists: []
-        }
+        };
 
-        willFocus = this.props.navigation.addListener(
+        let willFocus = this.props.navigation.addListener(
             'willFocus',
             payload => {
                 this.onFocus();
@@ -142,7 +151,7 @@ let styles = StyleSheet.create({
     
 });
 
-let ListsScreenWithContext = props => (
+let ListsScreenWithContext = (props: any) => (
     <LoginContext.Consumer>
         {loginService => (
             <ListContext.Consumer>
