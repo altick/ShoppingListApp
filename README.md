@@ -8,7 +8,7 @@ Based on https://github.com/invertase/react-native-firebase-starter
 
 Android:
 * Copy your google-services.json into /android/app/ folder
-* Generate the signign key (On Windows `keytool` must be run from `C:\Program Files\Java\jdkx.x.x_x\bin`)
+* Generate the signign key (On Windows `keytool` must be run from `C:\Program Files\Java\jdkx.x.x_x\bin`, use `cd $env:JAVA_HOME/bin`)
 ```
 $ keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
 ```
