@@ -20,9 +20,10 @@ keystore.alias=<my-alias>
 keystore.storePassword=<password>
 keystore.keyPassword=<password>
 ```
-  
-  
 
 *Note*
 
 !!! make sure your google-services.json is generated for the correct bundle ID !!!!
+
+# Build for production
+To build a production version update the google-services.json with corresponding file referencing the production environment.
