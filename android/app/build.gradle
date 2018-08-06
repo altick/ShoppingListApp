@@ -95,6 +95,9 @@ def enableSeparateBuildPerCPUArchitecture = false
  */
 def enableProguardInReleaseBuilds = false
 
+def Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
   lintOptions {
     disable 'GradleCompatible'
@@ -122,12 +125,10 @@ android {
   }
   signingConfigs {
       release {
-          if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
-              storeFile file(MYAPP_RELEASE_STORE_FILE)
-              storePassword MYAPP_RELEASE_STORE_PASSWORD
-              keyAlias MYAPP_RELEASE_KEY_ALIAS
-              keyPassword MYAPP_RELEASE_KEY_PASSWORD
-          }
+        storeFile file(properties.getProperty('keystore.file'))
+        storePassword properties.getProperty('keystore.storePassword')
+        keyAlias properties.getProperty('keystore.alias')
+        keyPassword properties.getProperty('keystore.keyPassword')
       }
   }
   splits {
