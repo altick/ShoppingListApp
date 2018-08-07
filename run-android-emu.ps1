@@ -1,0 +1,1 @@
+. "$($env:ANDROID_HOME)/emulator/emulator.exe" -avd Nexus_6P_API_27
