@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ListView } from 'react-native';
 import ListContext, { ListService } from '../ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Right, Fab, ListItem, List } from 'native-base';
 import LoginContext, { LoginService } from '../../login/LoginContext';
@@ -26,6 +26,8 @@ class ListsScreen extends React.Component<Props, State> {
 
     constructor(props) {
         super(props);
+
+        this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
         this.state = {
             lists: []
@@ -124,24 +126,32 @@ class ListsScreen extends React.Component<Props, State> {
                 </Header>
                 <View style={{ flex: 1 }}>
                     <Content>
-                        <List>
-                            { this.state.lists.map(list => (
-                                    <ListItem key={list.id} button={true} onPress={ () => this.onGotoList(list) } >
-                                        <Body>
-                                            <Text style={ { fontWeight: 'bold' } }>{ list.name }</Text>
-                                            { list.isShared && (
-                                                <Text note style={ { fontSize: 11 } }>{ list.author.username }</Text>
-                                            ) }
-                                        </Body>
+                        <List
+                            // https://docs.nativebase.io/Components.html#swipeable-multi-def-headref
+                            dataSource={ this.ds.cloneWithRows(this.state.lists) }
+                            renderRow={ list =>
+                                <ListItem key={list.id} button={true} onPress={ () => this.onGotoList(list) } >
+                                    <Body>
+                                        <Text style={ { fontWeight: 'bold' } }>{ list.name }</Text>
                                         { list.isShared && (
-                                            <Right>
-                                                <Icon name="slideshare" type="Entypo" />
-                                            </Right>
+                                            <Text note style={ { fontSize: 11 } }>{ list.author.username }</Text>
                                         ) }
-                                    </ListItem> 
-                                ))
+                                    </Body>
+                                    { list.isShared && (
+                                        <Right>
+                                            <Icon name="slideshare" type="Entypo" />
+                                        </Right>
+                                    ) }
+                                </ListItem> 
                             }
-                        </List>
+                            disableRightSwipe={true}
+                            rightOpenValue={-75}
+                            renderRightHiddenRow={(data, secId, rowId, rowMap) => (
+                                <Button full danger >
+                                    <Icon active name="trash" />
+                                </Button> 
+                            )}
+                        />
                     </Content>
                     <Fab
                         containerStyle={{ }}
