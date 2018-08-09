@@ -3,7 +3,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, ListView } from 'react-native';
 import ListContext from '../ListContext';
-import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List, CheckBox, Right } from 'native-base';
+import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List, CheckBox, Right, Spinner } from 'native-base';
 import LoginContext, { User } from '../../login/LoginContext';
 
 import type { ShoppingList, ProductItem } from '../ListContext';
@@ -33,6 +33,7 @@ class ItemsScreen extends React.Component<Props> {
 
         let list: ShoppingList = this.props.navigation.getParam('list');
         this.state = {
+            isLoading: false,
             items: [],
             user: this.props.loginService.user,
             list: list,
@@ -55,6 +56,8 @@ class ItemsScreen extends React.Component<Props> {
     }
 
     async loadItems() {
+        this.setState({ isLoading: true });
+
         this.unsubscribeItems();
 
         let subscription = await this.props.listService.getItems(this.state.user, this.state.list, (snapshot) => {
@@ -78,7 +81,8 @@ class ItemsScreen extends React.Component<Props> {
             });
 
             this.setState({
-                items: items
+                items: items,
+                isLoading: false
             });
         });
         this.itemsSubscription = subscription;
@@ -156,6 +160,7 @@ class ItemsScreen extends React.Component<Props> {
                 </Header>
                 <View style={{ flex: 1 }}>
                     <Content>
+                        { this.state.isLoading && <Spinner /> }
                         <List
                             dataSource={ this.ds.cloneWithRows(this.state.items) }
                             renderRow={ item =>

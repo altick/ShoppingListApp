@@ -4,7 +4,7 @@ import React from 'react';
 
 import { StyleSheet, Text, View, ListView } from 'react-native';
 import ListContext, { ListService } from '../ListContext';
-import { Container, Header, Content, Button, Body, Title, Icon, Left, Right, Fab, ListItem, List } from 'native-base';
+import { Container, Header, Content, Button, Body, Title, Icon, Left, Right, Fab, ListItem, List, Spinner } from 'native-base';
 import Image from 'react-native-remote-svg'
 import LoginContext, { LoginService } from '../../login/LoginContext';
 
@@ -33,6 +33,7 @@ class ListsScreen extends React.Component<Props, State> {
         this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
         this.state = {
+            isLoading: false,
             user: this.props.loginService.user,
             lists: []
         };
@@ -64,6 +65,8 @@ class ListsScreen extends React.Component<Props, State> {
     }
 
     async loadLists() {
+        this.setState({ isLoading: true });
+
         this.unsubscribeLists();
 
         let subscription = await this.props.listService.getLists(this.state.user, (snapshot) => {
@@ -75,7 +78,8 @@ class ListsScreen extends React.Component<Props, State> {
             });
 
             this.setState({
-                lists: lists
+                lists: lists,
+                isLoading: false
             });
         });
 
@@ -145,6 +149,7 @@ class ListsScreen extends React.Component<Props, State> {
                     </Header>
                     <View style={{ flex: 1 }}>
                         <Content>
+                            { this.state.isLoading && <Spinner /> }
                             <List
                                 // https://docs.nativebase.io/Components.html#swipeable-multi-def-headref
                                 dataSource={ this.ds.cloneWithRows(this.state.lists) }
