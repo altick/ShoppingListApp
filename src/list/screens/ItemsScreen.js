@@ -149,7 +149,7 @@ class ItemsScreen extends React.Component<Props> {
                             renderRow={ item =>
                                 <ListItem icon key={item.id} button={true} onPress={ () => this.onItemClick(item) } >
                                     <Left><CheckBox checked={item.checked} onPress={ () => this.onItemClick(item) } /></Left>
-                                    <Body>
+                                    <Body style={ { marginLeft: 10 } }>
                                         <Text style={ { fontWeight: 'bold' } }>{ item.name }</Text>
                                         { (item.author.uid != this.state.user.uid) && (
                                             <Text note style={ { fontSize: 11 } }>{ item.author.username }</Text>
