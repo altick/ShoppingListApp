@@ -1,5 +1,5 @@
 import React from 'react';
-import { Animated, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import ListContext, { ListService, List, ProductItem } from '../ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, Form, Right, Item } from 'native-base';
 import LoginContext, { LoginService, User } from '../../login/LoginContext';
@@ -72,8 +72,8 @@ class AddItemScreen extends React.Component<Props> {
                         <Title>Add Item to { list.name }</Title>
                     </Body>
                     <Right>
-                        <Button transparent light onPress={ () => this.saveItem() }>
-                            <Text><Icon name='check' type="MaterialCommunityIcons" />Save</Text>
+                        <Button transparent onPress={ () => this.saveItem() }>
+                            <Text style={  Platform.OS == 'android' ? { color: 'white' } : {}  }>Save</Text><Icon name='check' type="MaterialCommunityIcons" />
                         </Button>
                     </Right>
                 </Header>
