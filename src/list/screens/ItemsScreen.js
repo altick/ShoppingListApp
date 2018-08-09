@@ -169,7 +169,7 @@ class ItemsScreen extends React.Component<Props> {
                     </Content>
                     <Fab
                         containerStyle={{ }}
-                        style={{ backgroundColor: '#5067FF' }}
+                        style={{ backgroundColor: '#73c000' }}
                         position="bottomRight"
                         onPress={() => this.onAddItem() }>
                         <Icon name="add" />
