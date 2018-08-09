@@ -143,7 +143,10 @@ class ListsScreen extends React.Component<Props, State> {
                             // https://docs.nativebase.io/Components.html#swipeable-multi-def-headref
                             dataSource={ this.ds.cloneWithRows(this.state.lists) }
                             renderRow={ list =>
-                                <ListItem key={list.id} button={true} onPress={ () => this.onGotoList(list) } >
+                                <ListItem style={ { paddingLeft: 10 } } icon key={list.id} button={true} onPress={ () => this.onGotoList(list) } >
+                                    <Left>
+                                        <Icon name="receipt" type="MaterialCommunityIcons" style={ { color: "gray" } } />
+                                    </Left>
                                     <Body>
                                         <Text style={ { fontWeight: 'bold' } }>{ list.name }</Text>
                                         { list.isShared && (
