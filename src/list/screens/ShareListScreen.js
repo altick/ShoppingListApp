@@ -1,8 +1,10 @@
 import React from 'react';
-import { Animated, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import ListContext, { ListService, List, ProductItem } from '../ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, Form, Right, Item } from 'native-base';
-import LoginContext, { LoginService, User } from '../../login/LoginContext';
+import LoginContext, { LoginService } from '../../login/LoginContext';
+
+import type { User } from '../../login/LoginContext';
 
 import { Input } from 'react-native-elements'
 
@@ -43,9 +45,7 @@ class ShareListScreen extends React.Component<Props> {
         this.props.navigation.pop()
     }
 
-    render() {
-        const { } = this.props;
-        
+    render() {        
         const list = this.state.list;
 
         return (
@@ -60,8 +60,8 @@ class ShareListScreen extends React.Component<Props> {
                         <Title>Share { list.name }</Title>
                     </Body>
                     <Right>
-                        <Button transparent light onPress={ () => this.save() }>
-                            <Text><Icon name='check' type="MaterialCommunityIcons" />Save</Text>
+                        <Button transparent onPress={ () => this.save() }>
+                            <Text style={  Platform.OS == 'android' ? { color: 'white' } : {}  }>Save</Text><Icon name='check' type="MaterialCommunityIcons" />
                         </Button>
                     </Right>
                 </Header>
