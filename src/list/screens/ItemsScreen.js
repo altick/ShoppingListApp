@@ -69,8 +69,8 @@ class ItemsScreen extends React.Component<Props> {
             });
 
             items.sort((a, b) => {
-                if(a.firstname < b.firstname) return -1;
-                if(a.firstname > b.firstname) return 1;
+                if(a.name < b.name) return -1;
+                if(a.name > b.name) return 1;
                 return 0;
             });
 
