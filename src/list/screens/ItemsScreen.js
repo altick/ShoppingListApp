@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ListView } from 'react-native';
 import ListContext from '../ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List, CheckBox, Right } from 'native-base';
 import LoginContext, { User } from '../../login/LoginContext';
@@ -26,6 +26,8 @@ class ItemsScreen extends React.Component<Props> {
 
     constructor(props) {
         super(props);
+
+        this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
         let list: ShoppingList = this.props.navigation.getParam('list');
         this.state = {
@@ -103,6 +105,16 @@ class ItemsScreen extends React.Component<Props> {
         this.props.navigation.push('ShareList', { list: this.state.list });
     }
 
+    async onDeleteItemClick(item) {
+        console.info('Delete item: ' + item.id);
+
+        this.props.listService.deleteItem(this.state.user, this.state.list, item.id)
+    }
+
+    closeRow(secId, rowId, rowMap) {
+        rowMap[`${secId}${rowId}`].props.closeRow();
+    }
+
     render() {
         const { navigation } = this.props;
         
@@ -129,20 +141,31 @@ class ItemsScreen extends React.Component<Props> {
                 </Header>
                 <View style={{ flex: 1 }}>
                     <Content>
-                        <List>
-                            { this.state.items.map(item => (
-                                    <ListItem icon key={item.id} button={true} onPress={ () => this.onItemClick(item) } >
-                                        <Left><CheckBox checked={item.checked} onPress={ () => this.onItemClick(item) } /></Left>
-                                        <Body>
-                                            <Text style={ { fontWeight: 'bold' } }>{ item.name }</Text>
-                                            { (item.author.uid != this.state.user.uid) && (
-                                                <Text note style={ { fontSize: 11 } }>{ item.author.username }</Text>
-                                            ) }
-                                        </Body>
-                                    </ListItem> 
-                                ))
+                        <List
+                            dataSource={ this.ds.cloneWithRows(this.state.items) }
+                            renderRow={ item =>
+                                <ListItem icon key={item.id} button={true} onPress={ () => this.onItemClick(item) } >
+                                    <Left><CheckBox checked={item.checked} onPress={ () => this.onItemClick(item) } /></Left>
+                                    <Body>
+                                        <Text style={ { fontWeight: 'bold' } }>{ item.name }</Text>
+                                        { (item.author.uid != this.state.user.uid) && (
+                                            <Text note style={ { fontSize: 11 } }>{ item.author.username }</Text>
+                                        ) }
+                                    </Body>
+                                </ListItem> 
                             }
-                        </List>
+                            closeOnRowBeginSwipe={true}
+                            disableRightSwipe={true}
+                            rightOpenValue={-75}
+                            renderRightHiddenRow={(data, secId, rowId, rowMap) => (
+                                <Button full danger onPress={ () => { 
+                                        this.closeRow(secId, rowId, rowMap);
+                                        this.onDeleteItemClick(data);
+                                    } }>
+                                    <Icon active name="trash" />
+                                </Button> 
+                            )}
+                        />
                     </Content>
                     <Fab
                         containerStyle={{ }}

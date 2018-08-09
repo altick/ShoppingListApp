@@ -18,8 +18,10 @@ export type ShoppingList = {
 }
 
 export type ProductItem = {
+    id?: string,
     name: string,
     checked: boolean,
+    deleted: boolean,
     author: {
         uid: string,
         username: string
@@ -92,6 +94,7 @@ export class ListService extends ServiceComponent {
     
         item = {
             ... item,
+            deleted: false,
             author: { uid: user.uid, username: user.username },
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
@@ -100,9 +103,7 @@ export class ListService extends ServiceComponent {
     }
 
     getItems = async (user, list, onSnapshot) => {
-
-        let query = getListRef(user, list).collection('items')
-            .orderBy('name');
+        let query = getListRef(user, list).collection('items').where('deleted', '==', false);
 
         let subscription = query.onSnapshot(snapshot => {
             onSnapshot(snapshot);
@@ -115,6 +116,12 @@ export class ListService extends ServiceComponent {
         let ref = getListRef(user, list).collection('items').doc(itemId);
 
         await ref.update(item);
+    }
+
+    deleteItem = async (user, list, itemId) => {
+        let ref = getListRef(user, list).collection('items').doc(itemId);
+
+        await ref.update({ deleted: true });
     }
 
     shareList = async (user, list, email) => {
