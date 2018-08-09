@@ -110,6 +110,14 @@ class ListsScreen extends React.Component<Props, State> {
         this.props.listService.deleteList(this.state.user, list)
     }
 
+    onShareListClick(list) {
+        this.props.navigation.push('ShareList', { list: list });
+    }
+
+    closeRow(secId, rowId, rowMap) {
+        rowMap[`${secId}${rowId}`].props.closeRow();
+    }
+
     render() {
         return (
             <Container>
@@ -150,11 +158,22 @@ class ListsScreen extends React.Component<Props, State> {
                                 </ListItem> 
                             }
                             closeOnRowBeginSwipe={true}
-                            disableRightSwipe={true}
                             rightOpenValue={-75}
                             renderRightHiddenRow={(data, secId, rowId, rowMap) => (
-                                <Button full danger onPress={ () => this.onDeleteListClick(data) }>
+                                <Button full danger onPress={ () => { 
+                                        this.closeRow(secId, rowId, rowMap);
+                                        this.onDeleteListClick(data);
+                                    } }>
                                     <Icon active name="trash" />
+                                </Button> 
+                            )}
+                            leftOpenValue={75}
+                            renderLeftHiddenRow={(data, secId, rowId, rowMap) => (
+                                <Button full success onPress={ () => {
+                                        this.closeRow(secId, rowId, rowMap);
+                                        this.onShareListClick(data);
+                                    } }>
+                                    <Icon active name="share" />
                                 </Button> 
                             )}
                         />
