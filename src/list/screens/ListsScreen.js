@@ -5,11 +5,13 @@ import React from 'react';
 import { StyleSheet, Text, View, ListView } from 'react-native';
 import ListContext, { ListService } from '../ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Right, Fab, ListItem, List } from 'native-base';
+import Image from 'react-native-remote-svg'
 import LoginContext, { LoginService } from '../../login/LoginContext';
 
 import type { ShoppingList } from '../ListContext';
 import type { User } from '../../login/LoginContext';
 
+import commonColor from '../../../native-base-theme/variables/commonColor';
 
 type Props = {
     navigation: any,
@@ -127,10 +129,13 @@ class ListsScreen extends React.Component<Props, State> {
                             {/* <Button transparent>
                                 <Icon name='menu' />
                             </Button> */}
-                            <Icon name="checklist" type="Octicons" />
+                            <Image
+                                source={ require('../../../assets/images/logo.svg') }
+                                style={{ width: 42, height: 42 }}
+                            />
                         </Left>
                         <Body>
-                            <Title>Shopping Lists</Title>
+                            <Title>My Shopping Lists</Title>
                         </Body>
                         <Right>
                             <Button transparent onPress={ () => this.onLogout() }>
@@ -146,7 +151,7 @@ class ListsScreen extends React.Component<Props, State> {
                                 renderRow={ list =>
                                     <ListItem style={ { paddingLeft: 10 } } icon key={list.id} button={true} onPress={ () => this.onGotoList(list) } >
                                         <Left>
-                                            <Icon name="receipt" type="MaterialCommunityIcons" style={ { color: "#73c000" } } />
+                                            <Icon name="receipt" type="MaterialCommunityIcons" style={ { color: commonColor.brandPrimary } } />
                                         </Left>
                                         <Body>
                                             <Text style={ { fontWeight: 'bold' } }>{ list.name }</Text>
@@ -184,7 +189,7 @@ class ListsScreen extends React.Component<Props, State> {
                         </Content>
                         <Fab
                             containerStyle={{ }}
-                            style={{ backgroundColor: '#73c000' }}
+                            style={{ backgroundColor: commonColor.brandPrimary }}
                             position="bottomRight"
                             onPress={() => this.onAddList() }>
                             <Icon name="add" />

@@ -8,6 +8,8 @@ import LoginContext, { User } from '../../login/LoginContext';
 
 import type { ShoppingList, ProductItem } from '../ListContext';
 
+import commonColor from '../../../native-base-theme/variables/commonColor';
+
 
 type Props = {
     listService: ListService,
@@ -128,7 +130,8 @@ class ItemsScreen extends React.Component<Props> {
                             <Icon name='arrow-left' type="MaterialCommunityIcons" />
                         </Button>
                     </Left>
-                    <Body>
+                    <Body style={ { flex: 1, flexDirection: 'row', alignContent: 'center' } }>
+                        <Icon name="receipt" type="MaterialCommunityIcons" style={ { color: 'white', marginRight: 10 } } />
                         <Title>{ list.name }</Title>
                     </Body>
                     <Right>
@@ -169,7 +172,7 @@ class ItemsScreen extends React.Component<Props> {
                     </Content>
                     <Fab
                         containerStyle={{ }}
-                        style={{ backgroundColor: '#73c000' }}
+                        style={{ backgroundColor: commonColor.brandPrimary }}
                         position="bottomRight"
                         onPress={() => this.onAddItem() }>
                         <Icon name="add" />
