@@ -10,6 +10,7 @@ export type ShoppingList = {
     name: string,
     isShared?: boolean,
     refId?: string,
+    deleted: boolean,
     author: {
         uid: string,
         username: string
@@ -55,7 +56,7 @@ export class ListService extends ServiceComponent {
     }
 
     getLists = async (user: User, onSnapshot) => {
-        let query = getListsCollectionRef(user.uid);
+        let query = getListsCollectionRef(user.uid).where('deleted', '==', false);
 
         let subscription = query.onSnapshot(snapshot => {
             onSnapshot(snapshot);
@@ -69,6 +70,7 @@ export class ListService extends ServiceComponent {
     
         list = {
             ... list,
+            deleted: false,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
@@ -77,6 +79,12 @@ export class ListService extends ServiceComponent {
         }
     
         await getListsCollectionRef(user.uid).add(list);
+    }
+
+    deleteList = async(user: User, list: ShoppingList) => {
+        console.info('Deleting list ' + list.id);
+
+        await getListRef(user, list).update({ deleted: true });
     }
 
     addItem = async (user: User, list: ShoppingList, item: ProductItem) => {

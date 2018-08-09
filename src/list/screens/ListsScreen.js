@@ -30,6 +30,7 @@ class ListsScreen extends React.Component<Props, State> {
         this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
         this.state = {
+            user: this.props.loginService.user,
             lists: []
         };
 
@@ -62,9 +63,7 @@ class ListsScreen extends React.Component<Props, State> {
     async loadLists() {
         this.unsubscribeLists();
 
-        let user: User = this.props.loginService.user;
-
-        let subscription = await this.props.listService.getLists(user, (snapshot) => {
+        let subscription = await this.props.listService.getLists(this.state.user, (snapshot) => {
             let lists = [];
             snapshot.forEach(doc => {
                 let list: ShoppingList = { ...doc.data(), id: doc.id };
@@ -103,6 +102,12 @@ class ListsScreen extends React.Component<Props, State> {
         await this.props.loginService.logoutUser();
 
         this.props.navigation.replace('Login');
+    }
+
+    async onDeleteListClick(list) {
+        console.info('Delete list: ' + list.id);
+
+        this.props.listService.deleteList(this.state.user, list)
     }
 
     render() {
@@ -144,10 +149,11 @@ class ListsScreen extends React.Component<Props, State> {
                                     ) }
                                 </ListItem> 
                             }
+                            closeOnRowBeginSwipe={true}
                             disableRightSwipe={true}
                             rightOpenValue={-75}
                             renderRightHiddenRow={(data, secId, rowId, rowMap) => (
-                                <Button full danger >
+                                <Button full danger onPress={ () => this.onDeleteListClick(data) }>
                                     <Icon active name="trash" />
                                 </Button> 
                             )}
