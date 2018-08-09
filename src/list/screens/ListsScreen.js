@@ -146,7 +146,7 @@ class ListsScreen extends React.Component<Props, State> {
                                 renderRow={ list =>
                                     <ListItem style={ { paddingLeft: 10 } } icon key={list.id} button={true} onPress={ () => this.onGotoList(list) } >
                                         <Left>
-                                            <Icon name="receipt" type="MaterialCommunityIcons" style={ { color: "gray" } } />
+                                            <Icon name="receipt" type="MaterialCommunityIcons" style={ { color: "#73c000" } } />
                                         </Left>
                                         <Body>
                                             <Text style={ { fontWeight: 'bold' } }>{ list.name }</Text>
