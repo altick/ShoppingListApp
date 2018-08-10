@@ -1,13 +1,14 @@
 import React from 'react';
 import { Platform, StyleSheet, Text, View, ListView } from 'react-native';
 import ListContext, { ListService, ProductItem } from '../ListContext';
-import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, Form, Right, Item, List, ListItem } from 'native-base';
+import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, Form, Right, Item, List, ListItem, H3 } from 'native-base';
 import LoginContext, { LoginService } from '../../login/LoginContext';
 
 import type { User } from '../../login/LoginContext';
 
 import { Input } from 'react-native-elements'
 import { getUsernameFromEmail } from '../../utils/helpers';
+import commonColor from '../../../native-base-theme/variables/commonColor';
 
 type Props = {
     listService: ListService,
@@ -77,31 +78,39 @@ class ShareListScreen extends React.Component<Props> {
                 </Header>
                 <View style={{ flex: 1 }}>
                     <Content>
-                        <Input 
-                            ref={ input => this.emailToAddInput = input }
-                            value={ this.state.emailToAdd } 
-                            onChangeText={(emailToAdd) => this.setState({ emailToAdd })}
-                            placeholder="Enter someone's email" />
-                        <Text>Shared with:</Text>
-                        { sharedWith.map(user => (
-                            <Text>{ getUsernameFromEmail(user.username) }</Text>
-                        )) }
-                        <List
-                            dataSource={ this.ds.cloneWithRows(sharedWith) }
-                            renderRow={ user => 
-                                <ListItem icon key={ user.uid } style={ { paddingLeft: 10 } }>
-                                    <Left>
-                                        <Icon name="user" type="Entypo" style={ { color: commonColor.brandPrimary } } />
-                                    </Left>
-                                    <Body>
-                                        <Text>{ getUsernameFromEmail(user.username) }</Text>
-                                    </Body>
-                                </ListItem>
-                            }
-                            disableLeftSwipe={true}
-                            disableRightSwipe={true}
-                        />
-                        
+                        <List>
+                            <ListItem itemHeader first>
+                                <Text>Add to list</Text>
+                            </ListItem>
+                            <ListItem>
+                                <Input 
+                                    ref={ input => this.emailToAddInput = input }
+                                    value={ this.state.emailToAdd } 
+                                    onChangeText={(emailToAdd) => this.setState({ emailToAdd })}
+                                    placeholder="Enter someone's email" />
+                            </ListItem>
+                            <ListItem itemHeader>
+                                <Text>Shared with</Text>
+                            </ListItem>
+                            <ListItem>
+                                <List
+                                    dataSource={ this.ds.cloneWithRows(sharedWith) }
+                                    renderRow={ user => 
+                                        <ListItem icon key={ user.uid } style={ { paddingLeft: 10 } }>
+                                            <Left>
+                                                <Icon name="user" type="Entypo" style={ { color: commonColor.brandPrimary } } />
+                                            </Left>
+                                            <Body>
+                                                <Text>{ getUsernameFromEmail(user.username) }</Text>
+                                            </Body>
+                                        </ListItem>
+                                    }
+                                    disableLeftSwipe={true}
+                                    disableRightSwipe={true}
+                                    renderLeftHiddenRow={(item, secId, rowId, rowMap) => {}}
+                                />
+                            </ListItem>
+                        </List>
                     </Content>
                 </View>
             </Container>
