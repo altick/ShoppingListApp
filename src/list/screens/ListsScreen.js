@@ -122,7 +122,7 @@ class ListsScreen extends React.Component<Props, State> {
         console.info('Delete list: ' + list.id);
 
         Alert.alert(
-            'Delete ' + list.name,
+            `Delete "${list.name}"`,
             'Are you sure you want to delete this list?',
             [
               {text: 'Yes', onPress: () => this.deleteList(list) },

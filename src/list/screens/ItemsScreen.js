@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { StyleSheet, Text, View, ListView } from 'react-native';
+import { StyleSheet, Text, View, ListView, Alert } from 'react-native';
 import ListContext from '../ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List, CheckBox, Right, Spinner } from 'native-base';
 import LoginContext, { User } from '../../login/LoginContext';
@@ -127,7 +127,20 @@ class ItemsScreen extends React.Component<Props> {
     async onDeleteItemClick(item) {
         console.info('Delete item: ' + item.id);
 
-        this.props.listService.deleteItem(this.state.user, this.state.list, item.id)
+        Alert.alert(
+            `Delete item "${item.name}" `,
+            'Are you sure you want to delete this item?',
+            [
+              {text: 'Yes', onPress: () => this.deleteItem(item) },
+              {text: 'No', onPress: () => console.log('Dismissed')},
+            ],
+            { cancelable: false }
+          );
+
+    }
+
+    async deleteItem(item) {
+        await this.props.listService.deleteItem(this.state.user, this.state.list, item.id);
     }
 
     closeRow(secId, rowId, rowMap) {
@@ -178,10 +191,10 @@ class ItemsScreen extends React.Component<Props> {
                             closeOnRowBeginSwipe={true}
                             disableLeftSwipe={true}
                             leftOpenValue={75}
-                            renderLeftHiddenRow={(data, secId, rowId, rowMap) => (
+                            renderLeftHiddenRow={(item, secId, rowId, rowMap) => (
                                 <Button full danger onPress={ () => { 
                                         this.closeRow(secId, rowId, rowMap);
-                                        this.onDeleteItemClick(data);
+                                        this.onDeleteItemClick(item);
                                     } }>
                                     <Icon active name="trash" />
                                 </Button> 
