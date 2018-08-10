@@ -115,7 +115,7 @@ android {
     applicationId "com.altick.shoppinglist"
     minSdkVersion 18
     targetSdkVersion 27
-    versionCode 3
+    versionCode 4
     versionName "1.0"
     ndk {
       abiFilters "armeabi-v7a", "x86"

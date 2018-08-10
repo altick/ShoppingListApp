@@ -192,19 +192,19 @@ class ListsScreen extends React.Component<Props, State> {
                                 }
                                 closeOnRowBeginSwipe={true}
                                 rightOpenValue={-75}
-                                renderLeftHiddenRow={(data, secId, rowId, rowMap) => (
-                                    <Button full danger onPress={ () => { 
+                                renderLeftHiddenRow={(list, secId, rowId, rowMap) => (
+                                    <Button full disabled={list.isShared} light={list.isShared} danger={!list.isShared} onPress={ () => { 
                                             this.closeRow(secId, rowId, rowMap);
-                                            this.onDeleteListClick(data);
+                                            this.onDeleteListClick(list);
                                         } }>
                                         <Icon active name="trash" />
                                     </Button> 
                                 )}
                                 leftOpenValue={75}
-                                renderRightHiddenRow={(data, secId, rowId, rowMap) => (
-                                    <Button full success onPress={ () => {
+                                renderRightHiddenRow={(list, secId, rowId, rowMap) => (
+                                    <Button full disabled={list.isShared} light={list.isShared} success={!list.isShared} onPress={ () => {
                                             this.closeRow(secId, rowId, rowMap);
-                                            this.onShareListClick(data);
+                                            this.onShareListClick(list);
                                         } }>
                                         <Icon active name="share" />
                                     </Button> 
