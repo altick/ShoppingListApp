@@ -183,7 +183,7 @@ class ListsScreen extends React.Component<Props, State> {
                                                 <Text note style={ { fontSize: 11 } }>By { getUsernameFromEmail(list.author.username) }</Text>
                                             ) }
                                         </Body>
-                                        { list.isShared && (
+                                        { (list.isShared || list.sharedWith) && (
                                             <Right>
                                                 <Icon name="slideshare" type="Entypo" />
                                             </Right>
