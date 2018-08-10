@@ -9,6 +9,7 @@ import LoginContext, { User } from '../../login/LoginContext';
 import type { ShoppingList, ProductItem } from '../ListContext';
 
 import commonColor from '../../../native-base-theme/variables/commonColor';
+import { getUsernameFromEmail } from '../../utils/helpers';
 
 
 type Props = {
@@ -169,15 +170,15 @@ class ItemsScreen extends React.Component<Props> {
                                     <Body style={ { marginLeft: 10 } }>
                                         <Text style={ { fontWeight: 'bold' } }>{ item.name }</Text>
                                         { (item.author.uid != this.state.user.uid) && (
-                                            <Text note style={ { fontSize: 11 } }>{ item.author.username }</Text>
+                                            <Text note style={ { fontSize: 11 } }>By { getUsernameFromEmail(item.author.username) }</Text>
                                         ) }
                                     </Body>
                                 </ListItem> 
                             }
                             closeOnRowBeginSwipe={true}
-                            disableRightSwipe={true}
-                            rightOpenValue={-75}
-                            renderRightHiddenRow={(data, secId, rowId, rowMap) => (
+                            disableLeftSwipe={true}
+                            leftOpenValue={75}
+                            renderLeftHiddenRow={(data, secId, rowId, rowMap) => (
                                 <Button full danger onPress={ () => { 
                                         this.closeRow(secId, rowId, rowMap);
                                         this.onDeleteItemClick(data);

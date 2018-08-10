@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { StyleSheet, Text, View, ListView } from 'react-native';
+import { StyleSheet, Text, View, ListView, Alert } from 'react-native';
 import ListContext, { ListService } from '../ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Right, Fab, ListItem, List, Spinner } from 'native-base';
 import Image from 'react-native-remote-svg'
@@ -12,6 +12,7 @@ import type { ShoppingList } from '../ListContext';
 import type { User } from '../../login/LoginContext';
 
 import commonColor from '../../../native-base-theme/variables/commonColor';
+import { getUsernameFromEmail } from '../../utils/helpers';
 
 type Props = {
     navigation: any,
@@ -120,9 +121,21 @@ class ListsScreen extends React.Component<Props, State> {
     async onDeleteListClick(list) {
         console.info('Delete list: ' + list.id);
 
-        this.props.listService.deleteList(this.state.user, list)
+        Alert.alert(
+            'Delete ' + list.name,
+            'Are you sure you want to delete this list?',
+            [
+              {text: 'Yes', onPress: () => this.deleteList(list) },
+              {text: 'No', onPress: () => console.log('Dismissed')},
+            ],
+            { cancelable: false }
+          );
     }
 
+    async deleteList(list) {
+        await this.props.listService.deleteList(this.state.user, list);
+    }
+ 
     onShareListClick(list) {
         this.props.navigation.push('ShareList', { list: list });
     }
@@ -167,7 +180,7 @@ class ListsScreen extends React.Component<Props, State> {
                                         <Body>
                                             <Text style={ { fontWeight: 'bold' } }>{ list.name }</Text>
                                             { list.isShared && (
-                                                <Text note style={ { fontSize: 11 } }>{ list.author.username }</Text>
+                                                <Text note style={ { fontSize: 11 } }>By { getUsernameFromEmail(list.author.username) }</Text>
                                             ) }
                                         </Body>
                                         { list.isShared && (
@@ -179,7 +192,7 @@ class ListsScreen extends React.Component<Props, State> {
                                 }
                                 closeOnRowBeginSwipe={true}
                                 rightOpenValue={-75}
-                                renderRightHiddenRow={(data, secId, rowId, rowMap) => (
+                                renderLeftHiddenRow={(data, secId, rowId, rowMap) => (
                                     <Button full danger onPress={ () => { 
                                             this.closeRow(secId, rowId, rowMap);
                                             this.onDeleteListClick(data);
@@ -188,7 +201,7 @@ class ListsScreen extends React.Component<Props, State> {
                                     </Button> 
                                 )}
                                 leftOpenValue={75}
-                                renderLeftHiddenRow={(data, secId, rowId, rowMap) => (
+                                renderRightHiddenRow={(data, secId, rowId, rowMap) => (
                                     <Button full success onPress={ () => {
                                             this.closeRow(secId, rowId, rowMap);
                                             this.onShareListClick(data);
