@@ -14,6 +14,8 @@ import type { User } from '../../login/LoginContext';
 import commonColor from '../../../native-base-theme/variables/commonColor';
 import { getUsernameFromEmail } from '../../utils/helpers';
 
+const ICON_IMG = require('../../../assets/images/logo.svg');
+
 type Props = {
     navigation: any,
     listService: ListService,
@@ -153,7 +155,7 @@ class ListsScreen extends React.Component<Props, State> {
                                 <Icon name='menu' />
                             </Button> */}
                             <Image
-                                source={ require('../../../assets/images/logo.svg') }
+                                source={ ICON_IMG }
                                 style={{ width: 42, height: 42 }}
                             />
                         </Left>
