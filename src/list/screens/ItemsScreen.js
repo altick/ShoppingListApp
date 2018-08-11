@@ -65,25 +65,16 @@ class ItemsScreen extends React.Component<Props> {
             let items = [];
             snapshot.forEach(doc => {
                 let item: ProductItem = { ...itemDefaults, ...doc.data(), id: doc.id };
-                console.info(JSON.stringify(item));
                 items.push(item);
             });
 
             items = items.sort((a, b) => {
-                if(a.priority && b.priority) {
-                    return sortByName(a, b);
-                } else if(a.priority) {
-                    return -1;
-                } else if(b.priority) {
-                    return 1;
-                } else {
-                    return sortByName(a, b);
-                }
+                return sortByName(a, b);
             });
 
             function sortByName(a, b) {
-                if(a.name < b.name) return -1;
-                if(a.name > b.name) return 1;
+                if(a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+                if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
                 return 0;
             }
 
@@ -92,6 +83,12 @@ class ItemsScreen extends React.Component<Props> {
                 if(a.priroty) return -1;
                 return 0;
             } 
+
+            items = items.sort((a, b) => {
+                if(a.priority == b.priority) return 0;
+                if(a.priority) return -1; 
+                if(!a.priority) return 1; 
+            });
 
             items = items.sort((a, b) => {
                 if(!a.checked && !b.checked) return 0;
@@ -128,6 +125,9 @@ class ItemsScreen extends React.Component<Props> {
         console.info('Item ' + item.name);
 
         item.checked = !item.checked;
+        if(item.priority) {
+            item.priority = false;
+        }
 
         let user: User = this.state.user;
 
@@ -162,7 +162,8 @@ class ItemsScreen extends React.Component<Props> {
     }
 
     async togglePriority(item) {
-        await this.props.listService.updateItem(this.state.user, this.state.list, item.id, { priority: !item.priority });
+        item.priority = !item.priority;
+        await this.props.listService.updateItem(this.state.user, this.state.list, item.id, { priority: item.priority });
     }
 
     closeRow(secId, rowId, rowMap) {
@@ -227,7 +228,7 @@ class ItemsScreen extends React.Component<Props> {
                             )}
                             rightOpenValue={-75}
                             renderRightHiddenRow={(item, secId, rowId, rowMap) => (
-                                <Button full danger onPress={ () => {
+                                <Button disabled={ item.checked } full danger={ !item.checked } light={ item.checked } onPress={ () => {
                                         this.togglePriority(item);
                                         this.closeRow(secId, rowId, rowMap);
                                     } }>
