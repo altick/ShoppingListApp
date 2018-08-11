@@ -39,7 +39,9 @@ const getListsCollectionRef = (uid) => {
         .collection('lists');
 }
 
-const getItemsCollectionRef = (uid) => {
+const getItemsCollectionRef = (user, list) => {
+    let uid = getListUid(user, list);
+
     return firebase.firestore()
         .collection('users')
         .doc(uid)
@@ -47,15 +49,24 @@ const getItemsCollectionRef = (uid) => {
 }
 
 const getListRef = (user, list) => {
+    let uid = getListUid(user, list);
+    let listId = getListId(list);
+
+    return getListsCollectionRef(uid).doc(listId);
+}
+
+function getListUid(user, list) {
     let userRef: User = list.isShared
         ? list.author
         : user;
+    return userRef.uid;
+}
 
+function getListId(list) {
     let listId = list.isShared
         ? list.refId
         : list.id;
-
-    return getListsCollectionRef(userRef.uid).doc(listId);
+    return listId;
 }
 
 export class ListService extends ServiceComponent {
@@ -101,18 +112,20 @@ export class ListService extends ServiceComponent {
     
         item = {
             ... item,
-            listId: list.id,
+            listId: getListId(list),
             deleted: false,
             author: { uid: user.uid, username: user.username },
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
     
-        await getItemsCollectionRef(user.uid).add(item);
+        await getItemsCollectionRef(user, list).add(item);
     }
 
     getItems = async (user, list, onSnapshot) => {
-        let query = getItemsCollectionRef(user.uid)
-            .where('listId', '==', list.id)
+        let listId = getListId(list);
+
+        let query = getItemsCollectionRef(user, list)
+            .where('listId', '==', listId)
             .where('deleted', '==', false);
 
         let subscription = query.onSnapshot(snapshot => {
@@ -123,13 +136,13 @@ export class ListService extends ServiceComponent {
     }
 
     updateItem = async (user, list, itemId, item) => {
-        let ref = getItemsCollectionRef(user.uid).doc(itemId);
+        let ref = getItemsCollectionRef(user, list).doc(itemId);
 
         await ref.update(item);
     }
 
     deleteItem = async (user, list, itemId) => {
-        let ref = getItemsCollectionRef(user.uid).doc(itemId);
+        let ref = getItemsCollectionRef(user, list).doc(itemId);
 
         await ref.update({ deleted: true });
     }
