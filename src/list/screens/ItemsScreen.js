@@ -69,15 +69,33 @@ class ItemsScreen extends React.Component<Props> {
                 items.push(item);
             });
 
-            items.sort((a, b) => {
+            items = items.sort((a, b) => {
+                if(a.priority && b.priority) {
+                    return sortByName(a, b);
+                } else if(a.priority) {
+                    return -1;
+                } else if(b.priority) {
+                    return 1;
+                } else {
+                    return sortByName(a, b);
+                }
+            });
+
+            function sortByName(a, b) {
                 if(a.name < b.name) return -1;
                 if(a.name > b.name) return 1;
                 return 0;
-            });
+            }
 
-            items.sort((a, b) => {
-                if(a.checked == b.checked) return 0;
-                if(a.checked) return 1;
+            function sortByPriority(a, b) {
+                if(!a.priority) return 1;
+                if(a.priroty) return -1;
+                return 0;
+            } 
+
+            items = items.sort((a, b) => {
+                if(!a.checked && !b.checked) return 0;
+                if(a.checked && b.checked) return sortByName(a, b);
                 if(!a.checked) return -1;
             });
 
@@ -143,6 +161,10 @@ class ItemsScreen extends React.Component<Props> {
         await this.props.listService.deleteItem(this.state.user, this.state.list, item.id);
     }
 
+    async togglePriority(item) {
+        await this.props.listService.updateItem(this.state.user, this.state.list, item.id, { priority: !item.priority });
+    }
+
     closeRow(secId, rowId, rowMap) {
         rowMap[`${secId}${rowId}`].props.closeRow();
     }
@@ -186,10 +208,14 @@ class ItemsScreen extends React.Component<Props> {
                                             <Text note style={ { fontSize: 11 } }>By { getUsernameFromEmail(item.author.username) }</Text>
                                         ) }
                                     </Body>
+                                    <Left>
+                                        { item.priority && (
+                                            <Icon style={ { color: 'red' } } active name="exclamation" type="FontAwesome" />
+                                        ) }
+                                    </Left>
                                 </ListItem> 
                             }
                             closeOnRowBeginSwipe={true}
-                            disableLeftSwipe={true}
                             leftOpenValue={75}
                             renderLeftHiddenRow={(item, secId, rowId, rowMap) => (
                                 <Button full danger onPress={ () => { 
@@ -197,6 +223,18 @@ class ItemsScreen extends React.Component<Props> {
                                         this.onDeleteItemClick(item);
                                     } }>
                                     <Icon active name="trash" />
+                                </Button> 
+                            )}
+                            rightOpenValue={-75}
+                            renderRightHiddenRow={(item, secId, rowId, rowMap) => (
+                                <Button full danger onPress={ () => {
+                                        this.togglePriority(item);
+                                        this.closeRow(secId, rowId, rowMap);
+                                    } }>
+                                    { item.priority && (
+                                        <Icon name="close" type="EvilIcons" style={ { marginRight: 0 } } />
+                                    ) }
+                                    <Icon name="exclamation" type="FontAwesome" />
                                 </Button> 
                             )}
                         />
