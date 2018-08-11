@@ -39,6 +39,13 @@ const getListsCollectionRef = (uid) => {
         .collection('lists');
 }
 
+const getItemsCollectionRef = (uid) => {
+    return firebase.firestore()
+        .collection('users')
+        .doc(uid)
+        .collection('items');
+}
+
 const getListRef = (user, list) => {
     let userRef: User = list.isShared
         ? list.author
@@ -94,16 +101,19 @@ export class ListService extends ServiceComponent {
     
         item = {
             ... item,
+            listId: list.id,
             deleted: false,
             author: { uid: user.uid, username: user.username },
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
     
-        await getListRef(user, list).collection('items').add(item);
+        await getItemsCollectionRef(user.uid).add(item);
     }
 
     getItems = async (user, list, onSnapshot) => {
-        let query = getListRef(user, list).collection('items').where('deleted', '==', false);
+        let query = getItemsCollectionRef(user.uid)
+            .where('listId', '==', list.id)
+            .where('deleted', '==', false);
 
         let subscription = query.onSnapshot(snapshot => {
             onSnapshot(snapshot);
@@ -113,13 +123,13 @@ export class ListService extends ServiceComponent {
     }
 
     updateItem = async (user, list, itemId, item) => {
-        let ref = getListRef(user, list).collection('items').doc(itemId);
+        let ref = getItemsCollectionRef(user.uid).doc(itemId);
 
         await ref.update(item);
     }
 
     deleteItem = async (user, list, itemId) => {
-        let ref = getListRef(user, list).collection('items').doc(itemId);
+        let ref = getItemsCollectionRef(user.uid).doc(itemId);
 
         await ref.update({ deleted: true });
     }
