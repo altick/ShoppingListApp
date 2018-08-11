@@ -90,7 +90,7 @@ class LoginScreen2 extends Component {
     } = this.state;
 
     
-    if(__DEV__) {
+    if(__DEV__ && !email.length) {
       email = 'altick87@hotmail.com';
       // email = 'altman.petr@gmail.com';
       password = 'Heslo1234';
