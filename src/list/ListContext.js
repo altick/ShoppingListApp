@@ -62,6 +62,7 @@ export class ListService extends ServiceComponent {
     getLists = async (user: User, onSnapshot) => {
         let query = getListsCollectionRef(user.uid)
             .where('ownerUid', '==', user.uid)
+            // .where('sharedWith.' + user.uid, '==', true)
             .where('deleted', '==', false);
 
         let subscription = query.onSnapshot(snapshot => {
@@ -155,21 +156,26 @@ export class ListService extends ServiceComponent {
         await listRef.set({ 
             ...(listData.data()),
             sharedWith: {
-                [userToShareWith.uid]: {
-                    uid: userToShareWith.uid,
-                    username: userToShareWith.username,
-                    email: userToShareWith.email
+                uids: {
+                    [userToShareWith.uid]: true
+                },
+                users: {
+                    [userToShareWith.uid]: {
+                        uid: userToShareWith.uid,
+                        username: userToShareWith.username,
+                        email: userToShareWith.email
+                    }
                 }
             }
-        })
+        });
 
-        let sharedList: ShoppingList = {
-            ...list,
-            isShared: true,
-            refId: list.id
-        };
+        // let sharedList: ShoppingList = {
+        //     ...list,
+        //     isShared: true,
+        //     refId: list.id
+        // };
 
-        await this.addList(userToShareWith, sharedList);
+        // await this.addList(userToShareWith, sharedList);
     }
 
 }

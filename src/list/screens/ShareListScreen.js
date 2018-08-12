@@ -29,7 +29,7 @@ class ShareListScreen extends React.Component<Props> {
             user: this.props.loginService.user,
             list: list,
             sharedWith: list.sharedWith 
-                ? Object.keys(list.sharedWith).map(key => list.sharedWith[key])
+                ? Object.keys(list.sharedWith.users).map(key => list.sharedWith.users[key])
                 : []
         };
     }
