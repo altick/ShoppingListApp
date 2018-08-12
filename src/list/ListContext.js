@@ -58,6 +58,7 @@ function getListId(list) {
 export class ListService extends ServiceComponent {
 
     listsSubscriptions = [];
+    itemsSubscriptions = [];
 
     constructor() {
         super(initialState);
@@ -69,7 +70,6 @@ export class ListService extends ServiceComponent {
     };
 
     getLists = (user: User) => {
-
         let ownLists$ = new Subject();
         let ownListsQuery = getListsCollectionRef(user.uid)
             .where('ownerUid', '==', user.uid)
@@ -109,7 +109,6 @@ export class ListService extends ServiceComponent {
         });
 
         return combined$;
-        ///return subscription;
     }
 
     addList = async (user: User, list: ShoppingList) => {
@@ -152,18 +151,66 @@ export class ListService extends ServiceComponent {
         await getItemsCollectionRef().add(item);
     }
 
-    getItems = async (list, onSnapshot) => {
+    unsubscribeItems = () => {
+        this.itemsSubscriptions.forEach(s => s() );
+        this.itemsSubscriptions = [];
+    };
+
+    getItems = (list) => {
         let listId = getListId(list);
+
+        let items$ = new Subject();
 
         let query = getItemsCollectionRef()
             .where('listId', '==', listId)
             .where('deleted', '==', false);
 
         let subscription = query.onSnapshot(snapshot => {
-            onSnapshot(snapshot);
+            let data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }) );
+
+            let items = this._sortItems(data);
+
+            items$.onNext(items);
         });
+        this.itemsSubscriptions.push(subscription);
         
-        return subscription;
+        return items$.asObservable();
+    }
+
+    getAllItems = (list) => {
+
+    }
+
+    _sortItems = (items) => {
+        items = items.sort((a, b) => {
+            return sortByName(a, b);
+        });
+
+        function sortByName(a, b) {
+            if(a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+            if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+            return 0;
+        }
+
+        function sortByPriority(a, b) {
+            if(!a.priority) return 1;
+            if(a.priroty) return -1;
+            return 0;
+        } 
+
+        items = items.sort((a, b) => {
+            if(a.priority == b.priority) return 0;
+            if(a.priority) return -1; 
+            if(!a.priority) return 1; 
+        });
+
+        items = items.sort((a, b) => {
+            if(!a.checked && !b.checked) return 0;
+            if(a.checked && b.checked) return sortByName(a, b);
+            if(!a.checked) return -1;
+        });
+
+        return items;
     }
 
     updateItem = async (itemId, item) => {

@@ -61,54 +61,17 @@ class ItemsScreen extends React.Component<Props> {
 
         this.unsubscribeItems();
 
-        let subscription = await this.props.listService.getItems(this.state.list, (snapshot) => {
-            let items = [];
-            snapshot.forEach(doc => {
-                let item: ProductItem = { ...itemDefaults, ...doc.data(), id: doc.id };
-                items.push(item);
-            });
-
-            items = items.sort((a, b) => {
-                return sortByName(a, b);
-            });
-
-            function sortByName(a, b) {
-                if(a.name.toLowerCase() < b.name.toLowerCase()) return -1;
-                if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
-                return 0;
-            }
-
-            function sortByPriority(a, b) {
-                if(!a.priority) return 1;
-                if(a.priroty) return -1;
-                return 0;
-            } 
-
-            items = items.sort((a, b) => {
-                if(a.priority == b.priority) return 0;
-                if(a.priority) return -1; 
-                if(!a.priority) return 1; 
-            });
-
-            items = items.sort((a, b) => {
-                if(!a.checked && !b.checked) return 0;
-                if(a.checked && b.checked) return sortByName(a, b);
-                if(!a.checked) return -1;
-            });
-
+        let observable = this.props.listService.getItems(this.state.list);
+        observable.subscribe(items => {
             this.setState({
                 items: items,
                 isLoading: false
             });
         });
-        this.itemsSubscription = subscription;
     }
 
     unsubscribeItems() {
-        if(this.itemsSubscription) {
-            this.itemsSubscription();
-            this.itemsSubscription = null;
-        }
+        this.props.listService.unsubscribeItems();
     }
 
     onAddItem() {
