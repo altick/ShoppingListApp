@@ -72,34 +72,45 @@ class ListsScreen extends React.Component<Props, State> {
 
         this.unsubscribeLists();
 
-        let subscription = await this.props.listService.getLists(this.state.user, (snapshot) => {
-            let lists = [];
-            snapshot.forEach(doc => {
-                let list: ShoppingList = { ...doc.data(), id: doc.id };
-                console.info(JSON.stringify(list));
-                lists.push(list);
-            });
+        let observable = this.props.listService.getLists(this.state.user);
 
-            lists.sort((a, b) => {
-                if(a.name < b.name) return -1;
-                if(a.name > b.name) return 1;
-                return 0;
-            });
-
+        observable.subscribe(lists => {
             this.setState({
                 lists: lists,
                 isLoading: false
             });
         });
 
-        this.listsSubscription = subscription;
+        // let subscription = await this.props.listService.getLists(this.state.user, (snapshot) => {
+        //     let lists = [];
+        //     snapshot.forEach(doc => {
+        //         let list: ShoppingList = { ...doc.data(), id: doc.id };
+        //         console.info(JSON.stringify(list));
+        //         lists.push(list);
+        //     });
+
+        //     lists.sort((a, b) => {
+        //         if(a.name < b.name) return -1;
+        //         if(a.name > b.name) return 1;
+        //         return 0;
+        //     });
+
+        //     this.setState({
+        //         lists: lists,
+        //         isLoading: false
+        //     });
+        // });
+
+        // this.listsSubscription = subscription;
     }
 
     unsubscribeLists() {
-        if(this.listsSubscription) {
-            this.listsSubscription();
-            this.listsSubscription = null;
-        }
+        // if(this.listsSubscription) {
+        //     this.listsSubscription();
+        //     this.listsSubscription = null;
+        // }
+
+        this.props.listService.unsubscribeLists();
     }
 
     onAddList() {

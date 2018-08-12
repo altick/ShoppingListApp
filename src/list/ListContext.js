@@ -5,6 +5,8 @@ import { createServiceContext, ServiceComponent } from '../utils/ServiceComponen
 import firebase from 'react-native-firebase';
 import { User } from '../login/LoginContext';
 
+import { Subject, Observable } from 'rx';
+
 export type ShoppingList = {
     id?: string,
     name: string,
@@ -55,21 +57,59 @@ function getListId(list) {
 
 export class ListService extends ServiceComponent {
 
+    listsSubscriptions = [];
+
     constructor() {
         super(initialState);
     }
 
-    getLists = async (user: User, onSnapshot) => {
-        let query = getListsCollectionRef(user.uid)
+    unsubscribeLists = () => {
+        this.listsSubscriptions.forEach(s => s() );
+        this.listsSubscriptions = [];
+    };
+
+    getLists = (user: User) => {
+
+        let ownLists$ = new Subject();
+        let ownListsQuery = getListsCollectionRef(user.uid)
             .where('ownerUid', '==', user.uid)
-            // .where('sharedWith.' + user.uid, '==', true)
             .where('deleted', '==', false);
 
-        let subscription = query.onSnapshot(snapshot => {
-            onSnapshot(snapshot);
+        let sharedLists$ = new Subject();
+        let sharedListsQuery = getListsCollectionRef(user.uid)
+            .where('sharedWith.uids.' + user.uid, '==', true)
+            .where('deleted', '==', false);
+
+        let ownListsSubscription = ownListsQuery.onSnapshot(snapshot => {
+            let data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }) );
+            ownLists$.onNext(data);
+        });
+        this.listsSubscriptions.push(ownListsSubscription);
+
+        let sharedListsSubscription = sharedListsQuery.onSnapshot(snapshot => {
+            let data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }) );
+            sharedLists$.onNext(data);
+        });
+        this.listsSubscriptions.push(sharedListsSubscription);
+
+        let combined$ = Observable.combineLatest(ownLists$, sharedLists$).switchMap(lists => {
+            let [ownLists, sharedLists] = lists;
+            let combined = [
+                ...ownLists,
+                ...sharedLists
+            ];
+
+            combined.sort((a, b) => {
+                if(a.name < b.name) return -1;
+                if(a.name > b.name) return 1;
+                return 0;
+            });
+
+            return Observable.of(combined);
         });
 
-        return subscription;
+        return combined$;
+        ///return subscription;
     }
 
     addList = async (user: User, list: ShoppingList) => {
