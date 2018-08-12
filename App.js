@@ -8,13 +8,43 @@ import MainStack from './src/navigation/MainStack';
 import LoginContext from './src/login/LoginContext';
 import ListContext from './src/list/ListContext';
 
+import firebase from 'react-native-firebase';
+const Banner = firebase.admob.Banner;
+const AdRequest = firebase.admob.AdRequest;
+const request = new AdRequest();
+
+const unitId = __DEV__
+  ? 'ca-app-pub-3940256099942544/6300978111'
+  : 'ca-app-pub-5617894997883575/5545752566';
+if(__DEV__) {
+  request.addTestDevice().build();
+} else {
+  // request targeting
+}
+
 export default class Root extends React.Component {
   render() {
     return (
       <StyleProvider style={getTheme(commonColor)}>
         <LoginContext.Provider>
           <ListContext.Provider>
-            <MainStack />
+            <LoginContext.Consumer>
+              {loginService => (
+                <View style={ { flex: 1 } }>
+                  <MainStack />
+                  { (loginService.user && !loginService.user.adFree) && (
+                    <Banner
+                      size={"SMART_BANNER"}
+                      unitId={unitId}
+                      request={request.build()}
+                      onAdLoaded={() => {
+                        console.log('Advert loaded');
+                      }}
+                    />
+                  )}
+                </View>
+              )}
+            </LoginContext.Consumer>
           </ListContext.Provider>
         </LoginContext.Provider>
       </StyleProvider>
