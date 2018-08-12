@@ -5,7 +5,7 @@ import React from 'react';
 import { StyleSheet, Text, View, ListView, Alert } from 'react-native';
 import ListContext, { ListService } from '../ListContext';
 import { Container, Header, Content, Button, Body, Title, Icon, Left, Right, Fab, ListItem, List, Spinner } from 'native-base';
-import Image from 'react-native-remote-svg'
+// import Image from 'react-native-remote-svg'
 import LoginContext, { LoginService } from '../../login/LoginContext';
 
 import type { ShoppingList } from '../ListContext';
@@ -14,7 +14,7 @@ import type { User } from '../../login/LoginContext';
 import commonColor from '../../../native-base-theme/variables/commonColor';
 import { getUsernameFromEmail } from '../../utils/helpers';
 
-const ICON_IMG = require('../../../assets/images/logo.svg');
+// const ICON_IMG = require('../../../assets/images/logo.svg');
 
 type Props = {
     navigation: any,
@@ -135,7 +135,7 @@ class ListsScreen extends React.Component<Props, State> {
     }
 
     async deleteList(list) {
-        await this.props.listService.deleteList(this.state.user, list);
+        await this.props.listService.deleteList(list);
     }
  
     onShareListClick(list) {
@@ -154,10 +154,10 @@ class ListsScreen extends React.Component<Props, State> {
                             {/* <Button transparent>
                                 <Icon name='menu' />
                             </Button> */}
-                            <Image
+                            {/* <Image
                                 source={ ICON_IMG }
                                 style={{ width: 42, height: 42 }}
-                            />
+                            /> */}
                         </Left>
                         <Body>
                             <Title>My Shopping Lists</Title>

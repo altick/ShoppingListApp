@@ -32,34 +32,18 @@ const initialState = {
     text: 'Hello'
 }
 
-const getListsCollectionRef = (uid) => {
+const getListsCollectionRef = () => {
     return firebase.firestore()
-        .collection('users')
-        .doc(uid)
         .collection('lists');
 }
 
-const getItemsCollectionRef = (user, list) => {
-    let uid = getListUid(user, list);
-
+const getItemsCollectionRef = () => {
     return firebase.firestore()
-        .collection('users')
-        .doc(uid)
         .collection('items');
 }
 
-const getListRef = (user, list) => {
-    let uid = getListUid(user, list);
-    let listId = getListId(list);
-
-    return getListsCollectionRef(uid).doc(listId);
-}
-
-function getListUid(user, list) {
-    let userRef: User = list.isShared
-        ? list.author
-        : user;
-    return userRef.uid;
+const getListRef = (list) => {
+    return getListsCollectionRef().doc(list.id);
 }
 
 function getListId(list) {
@@ -76,7 +60,9 @@ export class ListService extends ServiceComponent {
     }
 
     getLists = async (user: User, onSnapshot) => {
-        let query = getListsCollectionRef(user.uid).where('deleted', '==', false);
+        let query = getListsCollectionRef(user.uid)
+            .where('ownerUid', '==', user.uid)
+            .where('deleted', '==', false);
 
         let subscription = query.onSnapshot(snapshot => {
             onSnapshot(snapshot);
@@ -90,6 +76,7 @@ export class ListService extends ServiceComponent {
     
         list = {
             ... list,
+            ownerUid: user.uid,
             deleted: false,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
@@ -98,13 +85,15 @@ export class ListService extends ServiceComponent {
             list.author = { uid: user.uid, username: user.username };
         }
     
-        await getListsCollectionRef(user.uid).add(list);
+        await getListsCollectionRef().add(list);
     }
 
-    deleteList = async(user: User, list: ShoppingList) => {
+    deleteList = async(list: ShoppingList) => {
         console.info('Deleting list ' + list.id);
 
-        await getListRef(user, list).update({ deleted: true });
+        await getListRef(list).update({ deleted: true });
+
+        // TODO remove all shared lists
     }
 
     addItem = async (user: User, list: ShoppingList, item: ProductItem) => {
@@ -112,19 +101,20 @@ export class ListService extends ServiceComponent {
     
         item = {
             ... item,
+            ownerUid: user.uid,
             listId: getListId(list),
             deleted: false,
             author: { uid: user.uid, username: user.username },
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
     
-        await getItemsCollectionRef(user, list).add(item);
+        await getItemsCollectionRef().add(item);
     }
 
-    getItems = async (user, list, onSnapshot) => {
+    getItems = async (list, onSnapshot) => {
         let listId = getListId(list);
 
-        let query = getItemsCollectionRef(user, list)
+        let query = getItemsCollectionRef()
             .where('listId', '==', listId)
             .where('deleted', '==', false);
 
@@ -135,14 +125,14 @@ export class ListService extends ServiceComponent {
         return subscription;
     }
 
-    updateItem = async (user, list, itemId, item) => {
-        let ref = getItemsCollectionRef(user, list).doc(itemId);
+    updateItem = async (itemId, item) => {
+        let ref = getItemsCollectionRef().doc(itemId);
 
         await ref.update(item);
     }
 
-    deleteItem = async (user, list, itemId) => {
-        let ref = getItemsCollectionRef(user, list).doc(itemId);
+    deleteItem = async (itemId) => {
+        let ref = getItemsCollectionRef().doc(itemId);
 
         await ref.update({ deleted: true });
     }
@@ -159,7 +149,7 @@ export class ListService extends ServiceComponent {
         let userToShareWith: User = result.docs[0].data();
 
         // get the data of the original list
-        let listRef = getListRef(list.author, list);
+        let listRef = getListRef(list);
         let listData = await listRef.get();
         // add the target user to the map
         await listRef.set({ 

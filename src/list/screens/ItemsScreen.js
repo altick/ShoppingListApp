@@ -61,7 +61,7 @@ class ItemsScreen extends React.Component<Props> {
 
         this.unsubscribeItems();
 
-        let subscription = await this.props.listService.getItems(this.state.user, this.state.list, (snapshot) => {
+        let subscription = await this.props.listService.getItems(this.state.list, (snapshot) => {
             let items = [];
             snapshot.forEach(doc => {
                 let item: ProductItem = { ...itemDefaults, ...doc.data(), id: doc.id };
@@ -131,7 +131,7 @@ class ItemsScreen extends React.Component<Props> {
 
         let user: User = this.state.user;
 
-        this.props.listService.updateItem(user, this.state.list, item.id, item);
+        this.props.listService.updateItem(item.id, item);
 
         this.forceUpdate();
     }
@@ -158,12 +158,12 @@ class ItemsScreen extends React.Component<Props> {
     }
 
     async deleteItem(item) {
-        await this.props.listService.deleteItem(this.state.user, this.state.list, item.id);
+        await this.props.listService.deleteItem(item.id);
     }
 
     async togglePriority(item) {
         item.priority = !item.priority;
-        await this.props.listService.updateItem(this.state.user, this.state.list, item.id, { priority: item.priority });
+        await this.props.listService.updateItem(item.id, { priority: item.priority });
     }
 
     closeRow(secId, rowId, rowMap) {
