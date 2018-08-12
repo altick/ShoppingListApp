@@ -128,7 +128,7 @@ class ListsScreen extends React.Component<Props, State> {
     async onLogout() {
         await this.props.loginService.logoutUser();
 
-        this.props.navigation.replace('Login');
+        this.props.navigation.navigate('LoginStack');
     }
 
     async onDeleteListClick(list) {
@@ -162,9 +162,9 @@ class ListsScreen extends React.Component<Props, State> {
                 <Container>
                     <Header>
                         <Left>
-                            {/* <Button transparent>
+                            <Button transparent onPress={() => this.props.navigation.openDrawer() }>
                                 <Icon name='menu' />
-                            </Button> */}
+                            </Button>
                             {/* <Image
                                 source={ ICON_IMG }
                                 style={{ width: 42, height: 42 }}

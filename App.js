@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Platform, Image, Text, View, ScrollView } from 'react-native';
-import { StyleProvider } from 'native-base';
+import { StyleProvider, Root  } from 'native-base';
 import getTheme from './native-base-theme/components';
 import commonColor from './native-base-theme/variables/commonColor';
 
-import MainStack from './src/navigation/MainStack';
+import RootStack from './src/navigation/RootStack';
 import LoginContext from './src/login/LoginContext';
 import ListContext from './src/list/ListContext';
 
@@ -22,7 +22,7 @@ if(__DEV__) {
   // request targeting
 }
 
-export default class Root extends React.Component {
+export default class AppRoot extends React.Component {
   render() {
     return (
       <StyleProvider style={getTheme(commonColor)}>
@@ -30,8 +30,8 @@ export default class Root extends React.Component {
           <ListContext.Provider>
             <LoginContext.Consumer>
               {loginService => (
-                <View style={ { flex: 1 } }>
-                  <MainStack />
+                <Root style={ { flex: 1 } }>
+                  <RootStack />
                   { (loginService.user && !loginService.user.adFree) && (
                     <Banner
                       size={"SMART_BANNER"}
@@ -42,7 +42,7 @@ export default class Root extends React.Component {
                       }}
                     />
                   )}
-                </View>
+                </Root>
               )}
             </LoginContext.Consumer>
           </ListContext.Provider>

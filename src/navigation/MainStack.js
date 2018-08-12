@@ -1,21 +1,13 @@
 // @flow
 
-import { createStackNavigator } from 'react-navigation';
-import Startup from '../Startup';
-import LoginScreenWithContext from '../login/screens/LoginScreen';
+import { StackNavigator } from 'react-navigation';
 import ListsScreenWithContext from '../list/screens/ListsScreen';
 import AddListScreenWithContext from '../list/screens/AddListScreen';
 import AddItemScreenWithContext from '../list/screens/AddItemScreen';
 import ShareListScreenWithContext from '../list/screens/ShareListScreen';
 import ItemsScreenWithContext from '../list/screens/ItemsScreen';
 
-const MainStack = createStackNavigator({
-    Startup: {
-        screen: Startup
-    },
-    Login: {
-        screen: LoginScreenWithContext
-    },
+const MainStack = StackNavigator({
     Lists: {
         screen: ListsScreenWithContext
     },
@@ -33,7 +25,7 @@ const MainStack = createStackNavigator({
     }
 },
 {
-  initialRouteName: 'Startup',
+  initialRouteName: 'Lists',
   headerMode: 'none'
 });
 

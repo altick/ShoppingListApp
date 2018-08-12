@@ -178,7 +178,7 @@ class LoginScreen2 extends Component {
   }
 
   onLoginSuccess() {
-    this.props.navigation.replace('Lists');
+    this.props.navigation.navigate('MainStack');
   }
 
   render() {

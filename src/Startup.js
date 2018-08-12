@@ -10,9 +10,9 @@ class StartupComponent extends React.Component {
     async componentDidMount() {
       let status = await this.props.loginService.validateUser();
       if(status) {
-        this.props.navigation.replace('Lists');
+        this.props.navigation.replace('MainStack');
       } else {
-        this.props.navigation.replace('Login');
+        this.props.navigation.replace('LoginStack');
       }
     }
   
