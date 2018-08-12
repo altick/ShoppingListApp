@@ -132,8 +132,6 @@ export class ListService extends ServiceComponent {
         console.info('Deleting list ' + list.id);
 
         await getListRef(list).update({ deleted: true });
-
-        // TODO remove all shared lists
     }
 
     addItem = async (user: User, list: ShoppingList, item: ProductItem) => {
@@ -175,10 +173,6 @@ export class ListService extends ServiceComponent {
         this.itemsSubscriptions.push(subscription);
         
         return items$.asObservable();
-    }
-
-    getAllItems = (list) => {
-
     }
 
     _sortItems = (items) => {
@@ -255,14 +249,6 @@ export class ListService extends ServiceComponent {
                 }
             }
         });
-
-        // let sharedList: ShoppingList = {
-        //     ...list,
-        //     isShared: true,
-        //     refId: list.id
-        // };
-
-        // await this.addList(userToShareWith, sharedList);
     }
 
 }
