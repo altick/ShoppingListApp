@@ -41,6 +41,17 @@ class ItemsScreen extends React.Component<Props> {
             isOwnList: !list.isShared,
             isSharedList: list.isShared
         };
+
+        let willFocus = this.props.navigation.addListener(
+            'willFocus',
+            payload => {
+                this.onFocus();
+            }
+        );
+    }
+
+    onFocus() {
+        this.enableScreen(true);
     }
 
     async componentDidMount() {
@@ -54,6 +65,12 @@ class ItemsScreen extends React.Component<Props> {
     componentDidUpdate(prevProps, prevState) {
         // Previous SomeContext value is prevProps.someValue
         // New SomeContext value is this.props.someValue
+    }
+
+    enableScreen(enabled) {
+        this.setState({
+            enabled: enabled
+        });
     }
 
     async loadItems() {
@@ -75,12 +92,20 @@ class ItemsScreen extends React.Component<Props> {
     }
 
     onAddItem() {
+        if(!this.state.enabled) {
+            return;
+        }
+        this.enableScreen(false);
         console.info('Add item');
 
         this.props.navigation.push('AddItem', { list: this.state.list });
     }
 
     navigateBack() {
+        if(!this.state.enabled) {
+            return;
+        }
+        this.enableScreen(false);
         this.props.navigation.popToTop()
     }
 
@@ -101,19 +126,25 @@ class ItemsScreen extends React.Component<Props> {
 
     async onShareList() {
         console.info('Share this list');
-
+        if(!this.state.enabled) {
+            return;
+        }
+        this.enableScreen(false);
         this.props.navigation.push('ShareList', { list: this.state.list });
     }
 
     async onDeleteItemClick(item) {
         console.info('Delete item: ' + item.id);
-
+        if(!this.state.enabled) {
+            return;
+        }
+        this.enableScreen(false);
         Alert.alert(
             `Delete item "${item.name}" `,
             'Are you sure you want to delete this item?',
             [
               {text: 'Yes', onPress: () => this.deleteItem(item) },
-              {text: 'No', onPress: () => console.log('Dismissed')},
+              {text: 'No', onPress: () => this.enableScreen(true) },
             ],
             { cancelable: false }
           );
@@ -122,11 +153,17 @@ class ItemsScreen extends React.Component<Props> {
 
     async deleteItem(item) {
         await this.props.listService.deleteItem(item.id);
+        this.enableScreen(true);
     }
 
     async togglePriority(item) {
+        if(!this.state.enabled) {
+            return;
+        }
+        this.enableScreen(false);
         item.priority = !item.priority;
         await this.props.listService.updateItem(item.id, { priority: item.priority });
+        this.enableScreen(true);
     }
 
     closeRow(secId, rowId, rowMap) {

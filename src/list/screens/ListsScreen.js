@@ -49,13 +49,13 @@ class ListsScreen extends React.Component<Props, State> {
         );
     }
 
+    onFocus() {
+        this.enableScreen(true);
+    }
+
     async componentDidMount() {
         console.info('lists mount');
         this.loadLists();
-    }
-
-    onFocus() {
-
     }
 
     componentWillUnmount() {
@@ -65,6 +65,12 @@ class ListsScreen extends React.Component<Props, State> {
     componentDidUpdate(prevProps, prevState) {
         // Previous SomeContext value is prevProps.someValue
         // New SomeContext value is this.props.someValue
+    }
+
+    enableScreen(enabled) {
+        this.setState({
+            enabled: enabled
+        });
     }
 
     async loadLists() {
@@ -114,18 +120,30 @@ class ListsScreen extends React.Component<Props, State> {
     }
 
     onAddList() {
+        if(!this.state.enabled) {
+            return;
+        }
+        this.enableScreen(false);
         console.info('Add list');
-
         this.props.navigation.push('AddList');
     }
 
     onGotoList(list) {
         console.info(list.name);
-       
+
+        if(!this.state.enabled) {
+            return;
+        }
+        this.enableScreen(false);
         this.props.navigation.push('Items',{ list: list });
     }
 
     async onLogout() {
+        if(!this.state.enabled) {
+            return;
+        }
+        this.enableScreen(false);
+
         await this.props.loginService.logoutUser();
 
         this.props.navigation.navigate('LoginStack');
@@ -133,13 +151,17 @@ class ListsScreen extends React.Component<Props, State> {
 
     async onDeleteListClick(list) {
         console.info('Delete list: ' + list.id);
+        if(!this.state.enabled) {
+            return;
+        }
+        this.enableScreen(false);
 
         Alert.alert(
             `Delete "${list.name}"`,
             'Are you sure you want to delete this list?',
             [
               {text: 'Yes', onPress: () => this.deleteList(list) },
-              {text: 'No', onPress: () => console.log('Dismissed')},
+              {text: 'No', onPress: () => this.enableScreen(true) },
             ],
             { cancelable: false }
           );
@@ -147,10 +169,19 @@ class ListsScreen extends React.Component<Props, State> {
 
     async deleteList(list) {
         await this.props.listService.deleteList(list);
+        this.enableScreen(true);
     }
  
     onShareListClick(list) {
+        if(!this.state.enabled) {
+            return;
+        }
+        this.enableScreen(false);
         this.props.navigation.push('ShareList', { list: list });
+    }
+
+    handleClick(action) {
+        
     }
 
     closeRow(secId, rowId, rowMap) {
@@ -158,6 +189,8 @@ class ListsScreen extends React.Component<Props, State> {
     }
 
     render() {
+        const { enabled, isLoading, lists } = this.state;
+
         return (
                 <Container>
                     <Header>
@@ -179,12 +212,12 @@ class ListsScreen extends React.Component<Props, State> {
                             </Button>
                         </Right>
                     </Header>
-                    <View style={{ flex: 1 }}>
+                    <View style={{ flex: 1 }} pointerEvents={ enabled ? 'auto' : 'none' }>
                         <Content>
-                            { this.state.isLoading && <Spinner /> }
+                            { isLoading && <Spinner /> }
                             <List
                                 // https://docs.nativebase.io/Components.html#swipeable-multi-def-headref
-                                dataSource={ this.ds.cloneWithRows(this.state.lists) }
+                                dataSource={ this.ds.cloneWithRows(lists) }
                                 renderRow={ list =>
                                     <ListItem style={ { paddingLeft: 10 } } icon key={list.id} button={true} onPress={ () => this.onGotoList(list) } >
                                         <Left>
