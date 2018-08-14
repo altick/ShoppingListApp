@@ -151,7 +151,11 @@ class ItemsScreen extends React.Component<Props> {
     }
 
     async onEditItem(item) {
-
+        if(!this.state.enabled) {
+            return;
+        }
+        this.enableScreen(false);
+        
         await this.props.navigation.navigate('AddItem', { item: item });
     }
 
