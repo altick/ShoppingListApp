@@ -2,9 +2,10 @@
 
 import { StyleSheet, View } from 'react-native';
 import React from 'react';
-import { Text, List, ListItem, Container, Image, Left, Icon, Content, H1 } from 'native-base';
+import { Text, List, ListItem, Container, Image, Left, Icon, Content, H1, Right } from 'native-base';
 import commonColor from '../../native-base-theme/variables/commonColor';
 import LoginContext from '../login/LoginContext';
+import { getUsernameFromEmail } from '../utils/helpers';
 
 type Props = {
   navigation: any,
@@ -21,7 +22,11 @@ class MenuComponent extends React.Component<Props> {
     await this.props.loginService.logoutUser();
 
     this.navigate('LoginStack');
-}
+  }
+
+  async gotoProfile() {
+    
+  }
 
   navigate(route: string) {
     this.props.navigation.closeDrawer();
@@ -45,6 +50,9 @@ class MenuComponent extends React.Component<Props> {
             {title}
           </Text>
         </Left>
+        <Right>
+          <Icon name="arrow-forward" />
+        </Right>
       </ListItem>
     );
   }
@@ -58,10 +66,20 @@ class MenuComponent extends React.Component<Props> {
         >
           <View style={ styles.header } >
             <H1 style={ styles.headerTitle }>Shopping list for us</H1>
+
+            <View style={ styles.profileContainer }>
+              <Icon style={ { color: 'white' } } name="account-circle" type="MaterialCommunityIcons" />
+              <Text style={ { marginLeft: 10, color: 'white' } }>{ this.props.loginService.user.username }</Text>
+            </View>
           </View>
           <List>
-             { this.renderMenuItem('My Shopping Lists', { name: 'shopping', type: 'MaterialCommunityIcons' }, () => this.navigate('Lists') ) }
-             { this.renderMenuItem('Logout', { name: 'logout', type: 'MaterialCommunityIcons' }, () => this.onLogout() ) }
+              {/* <ListItem style={ styles.listItemHeader }>
+                <Icon name="account-circle" type="MaterialCommunityIcons" />
+                <Text style={ { marginLeft: 10 } }>{ this.props.loginService.user.username }</Text>
+              </ListItem> */}
+              { this.renderMenuItem('My Shopping Lists', { name: 'shopping', type: 'MaterialCommunityIcons' }, () => this.navigate('Lists') ) }
+              { this.renderMenuItem('My account', { name: "account-edit", type: "MaterialCommunityIcons" }, () => this.gotoProfile() ) }
+              { this.renderMenuItem('Logout', { name: 'logout', type: 'MaterialCommunityIcons' }, () => this.onLogout() ) }
           </List>
         </Content>
       </Container>
@@ -75,7 +93,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     header: {
-      height: 56,
+      height: 56 * 2,
       padding: 12,
       backgroundColor: commonColor.brandPrimary
     },
@@ -84,6 +102,20 @@ const styles = StyleSheet.create({
     },
     text: {
       
+    },
+    listItemHeader: {
+      marginTop: 15,
+      borderBottomWidth: 1,
+      borderBottomColor: 'lightgray' 
+    },
+    profileContainer: { 
+      flex: 1, 
+      flexDirection: 'row', 
+      justifyContent: 'center',
+      alignItems: 'center',
+      position: "absolute", 
+      bottom: 10, 
+      left: 10 
     }
 });
 
