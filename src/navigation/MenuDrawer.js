@@ -12,7 +12,7 @@ const MenuDrawer = createDrawerNavigator({
     initialRouteName: "MainStack",
     // drawerWidth: 70,
     // drawerPosition: 'left',
-    // contentComponent: MenuComponent,
+    contentComponent: MenuComponent,
     headerMode: 'float',
     navigationOptions: ({navigation}) => ({
         headerStyle: {backgroundColor: '#4C3E54'},
