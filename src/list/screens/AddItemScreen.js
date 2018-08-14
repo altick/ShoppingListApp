@@ -16,8 +16,16 @@ class AddItemScreen extends React.Component<Props> {
     constructor(props) {
         super(props);
 
+        const item = this.props.navigation.getParam('item');
+        const mode = item != null
+            ? 'edit'
+            : 'add';
+
         this.state = {
-            text: ''
+            mode,
+            item,
+            list: this.props.navigation.getParam('list'),
+            itemName: item ? item.name : ''
         }
     }
 
@@ -33,20 +41,33 @@ class AddItemScreen extends React.Component<Props> {
     }
 
     async saveItem() {
+        const { mode, item, itemName } = this.state;
         console.info('save the list');
 
-        if(!this.state.itemName || this.state.itemName.length == 0) {
+        if(!itemName || itemName.length == 0) {
             return this.itemNameInput.shake();
         }
 
-        let list = this.props.navigation.getParam('list');
-        let user: User = this.props.loginService.user;
-        let item: ProductItem = {
-            author: user.id,
-            name: this.state.itemName
-        }
+        console.info(JSON.stringify(item));
 
-        await this.props.listService.addItem(user, list, item);
+
+        switch(mode) {
+            case 'add':
+                let list = this.props.navigation.getParam('list');
+                let user: User = this.props.loginService.user;
+                let newItem: ProductItem = {
+                    author: user.id,
+                    name: itemName
+                }
+        
+                await this.props.listService.addItem(user, list, newItem);
+                break;
+            case 'edit':
+                await this.props.listService.updateItem(item.id, { 
+                    name: itemName
+                });
+                break;
+        }
 
         this.navigateBack();
     }
@@ -57,8 +78,7 @@ class AddItemScreen extends React.Component<Props> {
 
     render() {
         const { navigation } = this.props;
-        
-        const list = navigation.getParam('list');
+        const { mode, list, item } = this.state;
 
         return (
             <Container>
@@ -69,7 +89,10 @@ class AddItemScreen extends React.Component<Props> {
                         </Button>
                     </Left>
                     <Body>
-                        <Title>Add Item to { list.name }</Title>
+                        { mode == 'edit' 
+                            ? <Title>Edit '{ item.name }'</Title>
+                            : <Title>Add Item to '{ list.name }'</Title>
+                        }
                     </Body>
                     <Right>
                         <Button transparent onPress={ () => this.saveItem() }>

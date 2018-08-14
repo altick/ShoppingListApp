@@ -3,7 +3,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, ListView, Alert } from 'react-native';
 import ListContext from '../ListContext';
-import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List, CheckBox, Right, Spinner } from 'native-base';
+import { Container, Header, Content, Button, Body, Title, Icon, Left, Fab, ListItem, List, CheckBox, Right, Spinner, Grid, Col } from 'native-base';
 import LoginContext, { User } from '../../login/LoginContext';
 
 import type { ShoppingList, ProductItem } from '../ListContext';
@@ -143,12 +143,16 @@ class ItemsScreen extends React.Component<Props> {
             `Delete item "${item.name}" `,
             'Are you sure you want to delete this item?',
             [
-              {text: 'Yes', onPress: () => this.deleteItem(item) },
-              {text: 'No', onPress: () => this.enableScreen(true) },
+                {text: 'Yes', onPress: () => this.deleteItem(item) },
+                {text: 'No', onPress: () => this.enableScreen(true) },
             ],
             { cancelable: false }
-          );
+        );
+    }
 
+    async onEditItem(item) {
+
+        await this.props.navigation.navigate('AddItem', { item: item });
     }
 
     async deleteItem(item) {
@@ -226,17 +230,31 @@ class ItemsScreen extends React.Component<Props> {
                                     <Icon active name="trash" />
                                 </Button> 
                             )}
-                            rightOpenValue={-75}
+                            rightOpenValue={-150}
                             renderRightHiddenRow={(item, secId, rowId, rowMap) => (
-                                <Button disabled={ item.checked } full danger={ !item.checked } light={ item.checked } onPress={ () => {
-                                        this.togglePriority(item);
-                                        this.closeRow(secId, rowId, rowMap);
-                                    } }>
-                                    { item.priority && (
-                                        <Icon name="close" type="EvilIcons" style={ { marginRight: 0 } } />
-                                    ) }
-                                    <Icon name="exclamation" type="FontAwesome" />
-                                </Button> 
+                                <Grid>
+                                    <Col>
+                                        <Button disabled={ item.checked } full danger={ !item.checked } light={ item.checked } onPress={ () => {
+                                            this.togglePriority(item);
+                                            this.closeRow(secId, rowId, rowMap);
+                                        } }>
+                                            { item.priority && (
+                                                <Icon name="close" type="EvilIcons" style={ { marginRight: 0 } } />
+                                            ) }
+                                            <Icon name="exclamation" type="FontAwesome" />
+                                        </Button>
+                                    </Col>
+                                    <Col>
+                                        <Button onPress={ () => { 
+                                            this.onEditItem(item);
+                                            this.closeRow(secId, rowId, rowMap);
+                                         } }>
+                                            <Icon name="edit" type="MaterialIcons" />
+                                        </Button>
+                                    </Col>
+                                </Grid>
+
+
                             )}
                         />
                     </Content>
