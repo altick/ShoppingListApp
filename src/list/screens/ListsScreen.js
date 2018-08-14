@@ -138,17 +138,6 @@ class ListsScreen extends React.Component<Props, State> {
         this.props.navigation.push('Items',{ list: list });
     }
 
-    async onLogout() {
-        if(!this.state.enabled) {
-            return;
-        }
-        this.enableScreen(false);
-
-        await this.props.loginService.logoutUser();
-
-        this.props.navigation.navigate('LoginStack');
-    }
-
     async onDeleteListClick(list) {
         console.info('Delete list: ' + list.id);
         if(!this.state.enabled) {
@@ -207,9 +196,7 @@ class ListsScreen extends React.Component<Props, State> {
                             <Title>My Shopping Lists</Title>
                         </Body>
                         <Right>
-                            <Button transparent onPress={ () => this.onLogout() }>
-                                <Icon name='logout' type="MaterialCommunityIcons" />
-                            </Button>
+                            
                         </Right>
                     </Header>
                     <View style={{ flex: 1 }} pointerEvents={ enabled ? 'auto' : 'none' }>

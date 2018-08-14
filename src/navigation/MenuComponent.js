@@ -4,20 +4,36 @@ import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import { Text, List, ListItem, Container, Image, Left, Icon, Content, H1 } from 'native-base';
 import commonColor from '../../native-base-theme/variables/commonColor';
+import LoginContext from '../login/LoginContext';
 
-export default class MenuComponent extends React.Component {
+type Props = {
+  navigation: any,
+  loginService: LoginService
+}
 
-  navigate(route: string) {
-    this.props.navigation.navigate(route);
-    this.props.navigation.closeDrawer();
+class MenuComponent extends React.Component<Props> {
+
+  constructor(props) {
+    super(props);
   }
 
-  renderMenuItem(title: string, icon: any, route: string) {
+  async onLogout() {
+    await this.props.loginService.logoutUser();
+
+    this.navigate('LoginStack');
+}
+
+  navigate(route: string) {
+    this.props.navigation.closeDrawer();
+    this.props.navigation.navigate(route);
+  }
+
+  renderMenuItem(title: string, icon: any, action: () => any) {
     return (
       <ListItem
         button
         noBorder
-        onPress={() => this.navigate(route) }
+        onPress={ action }
       >
         <Left>
           <Icon
@@ -44,7 +60,8 @@ export default class MenuComponent extends React.Component {
             <H1 style={ styles.headerTitle }>Shopping list for us</H1>
           </View>
           <List>
-             { this.renderMenuItem('My Shopping Lists', { name: 'shopping', type: 'MaterialCommunityIcons' }, 'Lists') }
+             { this.renderMenuItem('My Shopping Lists', { name: 'shopping', type: 'MaterialCommunityIcons' }, () => this.navigate('Lists') ) }
+             { this.renderMenuItem('Logout', { name: 'logout', type: 'MaterialCommunityIcons' }, () => this.onLogout() ) }
           </List>
         </Content>
       </Container>
@@ -69,3 +86,11 @@ const styles = StyleSheet.create({
       
     }
 });
+
+export default MenuComponentWithContext = (props: any) => (
+  <LoginContext.Consumer>
+    { loginService => (
+        <MenuComponent { ...props } loginService={ loginService }></MenuComponent>
+    ) }
+  </LoginContext.Consumer>
+);
